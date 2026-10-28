@@ -6,7 +6,7 @@
 //
 // Or manually declare it in `import`, for example:
 // import {
-//   "moonbitlang/x@0.4.6",
+//   "moonbitlang/x@0.5.6",
 // }
 
 name = "bobzhang/docx2html"
@@ -24,9 +24,9 @@ keywords = [ "docx", "html", "markdown", "mammoth" ]
 description = "Native MoonBit DOCX to HTML/Markdown converter ported from Mammoth"
 
 import {
-  "hustcer/fzip@0.5.8",
-  "moonbitlang/x@0.4.43",
-  "moonbitlang/async@0.19.1",
+  "hustcer/fzip@0.8.8",
+  "moonbitlang/x@0.5.6",
+  "moonbitlang/async@0.22.5",
 }
 
 preferred_target = "native"
