@@ -26,4 +26,3 @@ pub fn ZipArchive::read_text(Self, String) -> String? raise @core.DocxError
 // Type aliases
 
 // Traits
-
