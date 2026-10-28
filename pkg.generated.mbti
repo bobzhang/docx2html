@@ -92,7 +92,7 @@ pub fn note(String, String, Array[@document.DocumentElement]) -> @document.Note
 
 pub fn note_reference(String, String) -> @document.DocumentElement
 
-pub fn numbering(Bool, Int) -> @document.Numbering
+pub fn numbering(Bool, Int32) -> @document.Numbering
 
 pub fn open_zip(BytesView) -> @zip.ZipArchive raise DocxError
 
@@ -122,7 +122,7 @@ pub fn read_xml_string(String, namespace_map? : Map[String, String]) -> @xml.Xml
 
 pub fn run(Array[@document.DocumentElement], properties? : @document.RunProperties) -> @document.DocumentElement
 
-pub fn run_properties(style_id? : String?, style_name? : String?, is_bold? : Bool, is_underline? : Bool, is_italic? : Bool, is_strikethrough? : Bool, is_all_caps? : Bool, is_small_caps? : Bool, vertical_alignment? : @document.VerticalAlignment, font? : String?, font_size? : Int?, highlight? : String?) -> @document.RunProperties
+pub fn run_properties(style_id? : String?, style_name? : String?, is_bold? : Bool, is_underline? : Bool, is_italic? : Bool, is_strikethrough? : Bool, is_all_caps? : Bool, is_small_caps? : Bool, vertical_alignment? : @document.VerticalAlignment, font? : String?, font_size? : Int32?, highlight? : String?) -> @document.RunProperties
 
 pub fn simplify_html(Array[@html.HtmlNode]) -> Array[@html.HtmlNode]
 
@@ -134,7 +134,7 @@ pub fn tab() -> @document.DocumentElement
 
 pub fn table(Array[@document.DocumentElement], properties? : @document.TableProperties) -> @document.DocumentElement
 
-pub fn table_cell(Array[@document.DocumentElement], col_span? : Int, row_span? : Int) -> @document.DocumentElement
+pub fn table_cell(Array[@document.DocumentElement], col_span? : Int32, row_span? : Int32) -> @document.DocumentElement
 
 pub fn table_properties(style_id? : String?, style_name? : String?) -> @document.TableProperties
 
@@ -222,4 +222,3 @@ pub using @xml {type XmlNode}
 pub using @zip {type ZipArchive}
 
 // Traits
-
