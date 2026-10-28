@@ -26,7 +26,7 @@ suberror CliError {
 } derive(Debug, Eq)
 
 ///|
-extern "C" fn exit_process(status : Int) -> Unit = "exit"
+extern "C" fn exit_process(status : Int32) -> Unit = "exit"
 
 ///|
 async fn main {
@@ -271,7 +271,7 @@ fn basename(path : String) -> String {
 }
 
 ///|
-fn last_path_separator(path : String) -> Int? {
+fn last_path_separator(path : String) -> Int32? {
   match (path.rev_find("/"), path.rev_find("\\")) {
     (Some(left), Some(right)) => Some(if left > right { left } else { right })
     (Some(index), None) | (None, Some(index)) => Some(index)

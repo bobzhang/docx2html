@@ -17,10 +17,10 @@ pub(all) struct XmlElement {
 /// Builds an XML element.
 pub fn xml_element(
   name : String,
-  attributes? : Map[String, String] = {},
-  children? : Array[XmlNode] = [],
+  attributes~ : Map[String, String] = {},
+  children~ : Array[XmlNode] = [],
 ) -> XmlElement {
-  { name, attributes, children }
+  { name, attributes, children, }
 }
 
 ///|
@@ -109,9 +109,9 @@ pub fn XmlElement::text(self : XmlElement) -> String raise DocxError {
 /// Parses XML text into an element.
 pub fn read_xml_string(
   source : String,
-  namespace_map? : Map[String, String] = {},
+  namespace_map~ : Map[String, String] = {},
 ) -> XmlElement raise DocxError {
-  let parser = XmlParser::{ source, pos: 0, namespace_map, namespaces: {} }
+  let parser = XmlParser::{ source, pos: 0, namespace_map, namespaces: {}, }
   parser.skip_misc()
   let root = parser.parse_element()
   parser.skip_misc()
@@ -125,9 +125,9 @@ pub fn read_xml_string(
 /// Serializes an XML element to text.
 pub fn write_xml_string(
   root : XmlElement,
-  namespaces? : Map[String, String] = {},
+  namespaces~ : Map[String, String] = {},
 ) -> String {
-  let writer = XmlWriter::{ namespaces, uri_to_prefix: invert_map(namespaces) }
+  let writer = XmlWriter::{ namespaces, uri_to_prefix: invert_map(namespaces), }
   let builder = StringBuilder()
   builder.write_string(
     "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>",
@@ -169,7 +169,7 @@ fn XmlWriter::write_element(
   self : XmlWriter,
   builder : StringBuilder,
   element : XmlElement,
-  is_root? : Bool = false,
+  is_root~ : Bool = false,
 ) -> Unit {
   builder.write_string("<")
   builder.write_string(self.map_element_name(element.name))
@@ -271,7 +271,7 @@ fn write_serialized_xml_attributes(
 }
 
 ///|
-fn xml_attribute_rank(key : String) -> Int {
+fn xml_attribute_rank(key : String) -> Int32 {
   match key {
     "Id" => 0
     "Extension" => 0
@@ -300,7 +300,7 @@ fn write_serialized_xml_attribute(
 ///|
 priv struct XmlParser {
   source : String
-  mut pos : Int
+  mut pos : Int32
   namespace_map : Map[String, String]
   namespaces : Map[String, String]
 }
@@ -406,7 +406,7 @@ fn XmlParser::build_element(
       value,
     )
   }
-  { name: self.map_name(raw_name, is_attribute=false), attributes, children }
+  { name: self.map_name(raw_name, is_attribute=false), attributes, children, }
 }
 
 ///|
@@ -631,7 +631,7 @@ fn decode_numeric_xml_entity(entity : String) -> String? {
   match parse_xmldom_numeric_entity(entity[1:].to_owned()) {
     None => Some("\u{0}")
     Some(codepoint) =>
-      match Int::to_char(codepoint) {
+      match Int32::to_char(codepoint) {
         Some(char) => Some(char.to_string())
         None => None
       }
@@ -653,7 +653,7 @@ fn is_xmldom_entity_word(entity : String) -> Bool {
 }
 
 ///|
-fn parse_xmldom_numeric_entity(text : String) -> Int? {
+fn parse_xmldom_numeric_entity(text : String) -> Int32? {
   js_parse_int(replace_first_lower_x_with_hex_prefix(text))
 }
 
@@ -673,7 +673,7 @@ fn replace_first_lower_x_with_hex_prefix(text : String) -> String {
 }
 
 ///|
-fn js_parse_int(text : String) -> Int? {
+fn js_parse_int(text : String) -> Int32? {
   let mut index = 0
   let mut radix = 10
   if text.length() >= 2 && text[0] == '0' && (text[1] == 'x' || text[1] == 'X') {
@@ -703,7 +703,7 @@ fn js_parse_int(text : String) -> Int? {
 }
 
 ///|
-fn xml_entity_digit_value(char : UInt16, radix : Int) -> Int? {
+fn xml_entity_digit_value(char : UInt16, radix : Int32) -> Int32? {
   let value = if char >= '0' && char <= '9' {
     Some(char.to_int() - '0'.to_int())
   } else if char >= 'A' && char <= 'F' {

@@ -1098,7 +1098,7 @@ test "style map parser handles malformed and escaped edge cases" {
   )
   match
     expect_style_mapping("p:ordered-list(2):unordered-list(3) => ul > li").from {
-    ParagraphMatcher(numbering=Some({ is_ordered: false, level: 3 }), ..) => ()
+    ParagraphMatcher(numbering=Some({ is_ordered: false, level: 3, }), ..) => ()
     _ => fail("expected later list suffix to win")
   }
   inspect(@docx2html.read_style_map(["p => span "]).length(), content="0")
@@ -1305,14 +1305,14 @@ test "default nested list mappings collapse across orderedness" {
   let unordered_parent = @docx2html.ParagraphProperties::{
     style_id: None,
     style_name: None,
-    numbering: Some({ is_ordered: false, level: 1 }),
+    numbering: Some({ is_ordered: false, level: 1, }),
     alignment: None,
     indent: @docx2html.Indent::default(),
   }
   let ordered_child = @docx2html.ParagraphProperties::{
     style_id: None,
     style_name: None,
-    numbering: Some({ is_ordered: true, level: 2 }),
+    numbering: Some({ is_ordered: true, level: 2, }),
     alignment: None,
     indent: @docx2html.Indent::default(),
   }
@@ -1334,14 +1334,14 @@ test "default nested list mappings collapse across orderedness" {
   let ordered_parent = @docx2html.ParagraphProperties::{
     style_id: None,
     style_name: None,
-    numbering: Some({ is_ordered: true, level: 1 }),
+    numbering: Some({ is_ordered: true, level: 1, }),
     alignment: None,
     indent: @docx2html.Indent::default(),
   }
   let unordered_child = @docx2html.ParagraphProperties::{
     style_id: None,
     style_name: None,
-    numbering: Some({ is_ordered: false, level: 2 }),
+    numbering: Some({ is_ordered: false, level: 2, }),
     alignment: None,
     indent: @docx2html.Indent::default(),
   }
@@ -1823,14 +1823,14 @@ test "document converter warns for unrecognised styles" {
 
 ///|
 fn run_properties(
-  is_bold? : Bool = false,
-  is_underline? : Bool = false,
-  is_italic? : Bool = false,
-  is_strikethrough? : Bool = false,
-  is_all_caps? : Bool = false,
-  is_small_caps? : Bool = false,
-  vertical_alignment? : @docx2html.VerticalAlignment = Baseline,
-  highlight? : String? = None,
+  is_bold~ : Bool = false,
+  is_underline~ : Bool = false,
+  is_italic~ : Bool = false,
+  is_strikethrough~ : Bool = false,
+  is_all_caps~ : Bool = false,
+  is_small_caps~ : Bool = false,
+  vertical_alignment~ : @docx2html.VerticalAlignment = Baseline,
+  highlight~ : String? = None,
 ) -> @docx2html.RunProperties {
   @docx2html.run_properties(
     is_bold~,
@@ -2199,8 +2199,8 @@ test "document property helpers mirror Mammoth option defaults" {
 ///|
 fn table_cell(
   children : Array[@docx2html.DocumentElement],
-  col_span? : Int = 1,
-  row_span? : Int = 1,
+  col_span~ : Int32 = 1,
+  row_span~ : Int32 = 1,
 ) -> @docx2html.DocumentElement {
   @docx2html.table_cell(children, col_span~, row_span~)
 }
@@ -2208,7 +2208,7 @@ fn table_cell(
 ///|
 fn table_row(
   children : Array[@docx2html.DocumentElement],
-  is_header? : Bool = false,
+  is_header~ : Bool = false,
 ) -> @docx2html.DocumentElement {
   @docx2html.table_row(children, is_header~)
 }

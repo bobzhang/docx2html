@@ -18,13 +18,13 @@ pub(all) enum BreakType {
 /// List numbering metadata attached to a paragraph.
 pub(all) struct Numbering {
   is_ordered : Bool
-  level : Int
+  level : Int32
 } derive(Debug, Eq)
 
 ///|
 /// Builds paragraph numbering metadata.
-pub fn numbering(is_ordered : Bool, level : Int) -> Numbering {
-  { is_ordered, level }
+pub fn numbering(is_ordered : Bool, level : Int32) -> Numbering {
+  { is_ordered, level, }
 }
 
 ///|
@@ -47,10 +47,10 @@ fn none_if_empty(value : String?) -> String? {
 ///|
 /// Builds paragraph indentation metadata.
 pub fn indent(
-  start? : String? = None,
-  end? : String? = None,
-  first_line? : String? = None,
-  hanging? : String? = None,
+  start~ : String? = None,
+  end~ : String? = None,
+  first_line~ : String? = None,
+  hanging~ : String? = None,
 ) -> Indent {
   {
     start: none_if_empty(start),
@@ -79,11 +79,11 @@ pub(all) struct ParagraphProperties {
 ///|
 /// Builds paragraph formatting metadata.
 pub fn paragraph_properties(
-  style_id? : String? = None,
-  style_name? : String? = None,
-  numbering? : Numbering? = None,
-  alignment? : String? = None,
-  indent? : Indent = Indent::default(),
+  style_id~ : String? = None,
+  style_name~ : String? = None,
+  numbering~ : Numbering? = None,
+  alignment~ : String? = None,
+  indent~ : Indent = Indent::default(),
 ) -> ParagraphProperties {
   {
     style_id: none_if_empty(style_id),
@@ -113,25 +113,25 @@ pub(all) struct RunProperties {
   is_small_caps : Bool
   vertical_alignment : VerticalAlignment
   font : String?
-  font_size : Int?
+  font_size : Int32?
   highlight : String?
 } derive(Debug, Eq)
 
 ///|
 /// Builds run formatting metadata.
 pub fn run_properties(
-  style_id? : String? = None,
-  style_name? : String? = None,
-  is_bold? : Bool = false,
-  is_underline? : Bool = false,
-  is_italic? : Bool = false,
-  is_strikethrough? : Bool = false,
-  is_all_caps? : Bool = false,
-  is_small_caps? : Bool = false,
-  vertical_alignment? : VerticalAlignment = Baseline,
-  font? : String? = None,
-  font_size? : Int? = None,
-  highlight? : String? = None,
+  style_id~ : String? = None,
+  style_name~ : String? = None,
+  is_bold~ : Bool = false,
+  is_underline~ : Bool = false,
+  is_italic~ : Bool = false,
+  is_strikethrough~ : Bool = false,
+  is_all_caps~ : Bool = false,
+  is_small_caps~ : Bool = false,
+  vertical_alignment~ : VerticalAlignment = Baseline,
+  font~ : String? = None,
+  font_size~ : Int32? = None,
+  highlight~ : String? = None,
 ) -> RunProperties {
   {
     style_id: none_if_empty(style_id),
@@ -165,10 +165,10 @@ pub(all) struct TableProperties {
 ///|
 /// Builds table formatting metadata.
 pub fn table_properties(
-  style_id? : String? = None,
-  style_name? : String? = None,
+  style_id~ : String? = None,
+  style_name~ : String? = None,
 ) -> TableProperties {
-  { style_id: none_if_empty(style_id), style_name: none_if_empty(style_name) }
+  { style_id: none_if_empty(style_id), style_name: none_if_empty(style_name), }
 }
 
 ///|
@@ -231,8 +231,8 @@ pub(all) enum DocumentElement {
   TableRow(children~ : Array[DocumentElement], is_header~ : Bool)
   TableCell(
     children~ : Array[DocumentElement],
-    col_span~ : Int,
-    row_span~ : Int
+    col_span~ : Int32,
+    row_span~ : Int32
   )
   Break(BreakType)
   BookmarkStart(String)
@@ -242,8 +242,8 @@ pub(all) enum DocumentElement {
 /// Builds a document element.
 pub fn document(
   children : Array[DocumentElement],
-  notes? : Array[Note] = [],
-  comments? : Array[Comment] = [],
+  notes~ : Array[Note] = [],
+  comments~ : Array[Comment] = [],
 ) -> DocumentElement {
   Document(children~, notes~, comments~)
 }
@@ -252,7 +252,7 @@ pub fn document(
 /// Builds a paragraph element.
 pub fn paragraph(
   children : Array[DocumentElement],
-  properties? : ParagraphProperties = ParagraphProperties::default(),
+  properties~ : ParagraphProperties = ParagraphProperties::default(),
 ) -> DocumentElement {
   Paragraph(children~, properties~)
 }
@@ -261,7 +261,7 @@ pub fn paragraph(
 /// Builds a run element.
 pub fn run(
   children : Array[DocumentElement],
-  properties? : RunProperties = RunProperties::default(),
+  properties~ : RunProperties = RunProperties::default(),
 ) -> DocumentElement {
   Run(children~, properties~)
 }
@@ -288,9 +288,9 @@ pub fn checkbox(checked : Bool) -> DocumentElement {
 /// Builds a hyperlink element.
 pub fn hyperlink(
   children : Array[DocumentElement],
-  href? : String? = None,
-  anchor? : String? = None,
-  target_frame? : String? = None,
+  href~ : String? = None,
+  anchor~ : String? = None,
+  target_frame~ : String? = None,
 ) -> DocumentElement {
   Hyperlink(children~, href~, anchor~, target_frame~)
 }
@@ -312,16 +312,16 @@ pub fn comment_reference(comment_id : String) -> DocumentElement {
 pub fn image(
   content_type : String,
   data : Bytes,
-  alt_text? : String? = None,
+  alt_text~ : String? = None,
 ) -> DocumentElement {
-  Image({ content_type, alt_text, data })
+  Image({ content_type, alt_text, data, })
 }
 
 ///|
 /// Builds a table element.
 pub fn table(
   children : Array[DocumentElement],
-  properties? : TableProperties = TableProperties::default(),
+  properties~ : TableProperties = TableProperties::default(),
 ) -> DocumentElement {
   Table(children~, properties~)
 }
@@ -330,7 +330,7 @@ pub fn table(
 /// Builds a table-row element.
 pub fn table_row(
   children : Array[DocumentElement],
-  is_header? : Bool = false,
+  is_header~ : Bool = false,
 ) -> DocumentElement {
   TableRow(children~, is_header~)
 }
@@ -339,8 +339,8 @@ pub fn table_row(
 /// Builds a table-cell element.
 pub fn table_cell(
   children : Array[DocumentElement],
-  col_span? : Int = 1,
-  row_span? : Int = 1,
+  col_span~ : Int32 = 1,
+  row_span~ : Int32 = 1,
 ) -> DocumentElement {
   TableCell(children~, col_span~, row_span~)
 }
@@ -358,7 +358,7 @@ pub fn note(
   note_id : String,
   body : Array[DocumentElement],
 ) -> Note {
-  { note_type, note_id, body }
+  { note_type, note_id, body, }
 }
 
 ///|
@@ -366,10 +366,10 @@ pub fn note(
 pub fn comment(
   comment_id : String,
   body : Array[DocumentElement],
-  author_name? : String = "",
-  author_initials? : String = "",
+  author_name~ : String = "",
+  author_initials~ : String = "",
 ) -> Comment {
-  { comment_id, body, author_name, author_initials }
+  { comment_id, body, author_name, author_initials, }
 }
 
 ///|

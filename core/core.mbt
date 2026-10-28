@@ -36,7 +36,7 @@ pub(all) struct ConversionResult {
 ///|
 /// Creates a successful conversion result with no diagnostics.
 pub fn success(value : String) -> ConversionResult {
-  { value, messages: [] }
+  { value, messages: [], }
 }
 
 ///|
@@ -57,7 +57,7 @@ pub fn ConversionResult::map(
   self : ConversionResult,
   f : (String) -> String raise?,
 ) -> ConversionResult raise? {
-  { value: f(self.value), messages: self.messages }
+  { value: f(self.value), messages: self.messages, }
 }
 
 ///|
@@ -70,7 +70,7 @@ pub fn ConversionResult::flat_map(
   let messages = []
   messages.append(self.messages)
   messages.append(next.messages)
-  { value: next.value, messages: dedupe_messages(messages) }
+  { value: next.value, messages: dedupe_messages(messages), }
 }
 
 ///|
@@ -91,5 +91,5 @@ pub fn combine_results(results : Array[ConversionResult]) -> ConversionResult {
     value.write_string(result.value)
     messages.append(result.messages)
   }
-  { value: value.to_string(), messages: dedupe_messages(messages) }
+  { value: value.to_string(), messages: dedupe_messages(messages), }
 }

@@ -22,10 +22,10 @@ pub fn html_text(value : String) -> HtmlNode {
 /// Builds an HTML element node.
 pub fn html_element(
   tag : String,
-  attributes? : Map[String, String] = {},
-  children? : Array[HtmlNode] = [],
-  fresh? : Bool = false,
-  separator? : String = "",
+  attributes~ : Map[String, String] = {},
+  children~ : Array[HtmlNode] = [],
+  fresh~ : Bool = false,
+  separator~ : String = "",
 ) -> HtmlNode {
   Element(
     tag~,
@@ -40,9 +40,9 @@ pub fn html_element(
 /// Builds an HTML element with a fresh generated id.
 pub fn fresh_html_element(
   tag : String,
-  attributes? : Map[String, String] = {},
-  children? : Array[HtmlNode] = [],
-  separator? : String = "",
+  attributes~ : Map[String, String] = {},
+  children~ : Array[HtmlNode] = [],
+  separator~ : String = "",
 ) -> HtmlNode {
   Element(
     tag~,
@@ -66,7 +66,7 @@ fn separator_option(value : String) -> String? {
 /// Serializes HTML nodes to a string.
 pub fn write_html(
   nodes : Array[HtmlNode],
-  pretty_print? : Bool = false,
+  pretty_print~ : Bool = false,
 ) -> String {
   let writer = HtmlWriter::{
     pretty_print,
@@ -89,7 +89,7 @@ pub fn write_html(
 priv struct HtmlWriter {
   pretty_print : Bool
   buffer : StringBuilder
-  mut indent : Int
+  mut indent : Int32
   stack : Array[String]
   mut start : Bool
   mut in_text : Bool
@@ -300,7 +300,7 @@ fn HtmlWriter::write_attributes(
 }
 
 ///|
-fn html_attribute_rank(key : String) -> Int {
+fn html_attribute_rank(key : String) -> Int32 {
   match key {
     "class" => 0
     "href" => 1
