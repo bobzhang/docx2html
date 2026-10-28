@@ -53,7 +53,7 @@ fn simplify_html(nodes : Array[HtmlNode]) -> Array[HtmlNode] {
 }
 
 ///|
-fn write_html(nodes : Array[HtmlNode], pretty_print? : Bool = false) -> String {
+fn write_html(nodes : Array[HtmlNode], pretty_print~ : Bool = false) -> String {
   @html.write_html(nodes, pretty_print~)
 }
 
@@ -70,10 +70,10 @@ fn html_text(value : String) -> HtmlNode {
 ///|
 fn html_element(
   tag : String,
-  attributes? : Map[String, String] = {},
-  children? : Array[HtmlNode] = [],
-  fresh? : Bool = false,
-  separator? : String = "",
+  attributes~ : Map[String, String] = {},
+  children~ : Array[HtmlNode] = [],
+  fresh~ : Bool = false,
+  separator~ : String = "",
 ) -> HtmlNode {
   @html.html_element(tag, attributes~, children~, fresh~, separator~)
 }
@@ -81,9 +81,9 @@ fn html_element(
 ///|
 fn fresh_html_element(
   tag : String,
-  attributes? : Map[String, String] = {},
-  children? : Array[HtmlNode] = [],
-  separator? : String = "",
+  attributes~ : Map[String, String] = {},
+  children~ : Array[HtmlNode] = [],
+  separator~ : String = "",
 ) -> HtmlNode {
   @html.fresh_html_element(tag, attributes~, children~, separator~)
 }

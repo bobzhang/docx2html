@@ -29,22 +29,22 @@ pub(all) struct ImageConversion {
 /// Builds an image conversion result from rendered nodes and diagnostics.
 pub fn image_conversion(
   nodes : Array[HtmlNode],
-  messages? : Array[Message] = [],
+  messages~ : Array[Message] = [],
 ) -> ImageConversion {
-  { nodes, messages }
+  { nodes, messages, }
 }
 
 ///|
 /// Converts a document tree to HTML.
 pub fn convert_document_to_html(
   document : DocumentElement,
-  style_map? : Array[String] = [],
-  include_default_style_map? : Bool = true,
-  ignore_empty_paragraphs? : Bool = true,
-  id_prefix? : String = "",
-  pretty_print? : Bool = false,
-  convert_image? : (Image) -> ImageConversion = data_uri_image_converter,
-  transform_document? : (DocumentElement) -> DocumentElement = identity_document_transform,
+  style_map~ : Array[String] = [],
+  include_default_style_map~ : Bool = true,
+  ignore_empty_paragraphs~ : Bool = true,
+  id_prefix~ : String = "",
+  pretty_print~ : Bool = false,
+  convert_image~ : (Image) -> ImageConversion = data_uri_image_converter,
+  transform_document~ : (DocumentElement) -> DocumentElement = identity_document_transform,
 ) -> ConversionResult {
   convert_document(
     document,
@@ -63,12 +63,12 @@ pub fn convert_document_to_html(
 /// Converts a document tree to Markdown.
 pub fn convert_document_to_markdown(
   document : DocumentElement,
-  style_map? : Array[String] = [],
-  include_default_style_map? : Bool = true,
-  ignore_empty_paragraphs? : Bool = true,
-  id_prefix? : String = "",
-  convert_image? : (Image) -> ImageConversion = data_uri_image_converter,
-  transform_document? : (DocumentElement) -> DocumentElement = identity_document_transform,
+  style_map~ : Array[String] = [],
+  include_default_style_map~ : Bool = true,
+  ignore_empty_paragraphs~ : Bool = true,
+  id_prefix~ : String = "",
+  convert_image~ : (Image) -> ImageConversion = data_uri_image_converter,
+  transform_document~ : (DocumentElement) -> DocumentElement = identity_document_transform,
 ) -> ConversionResult {
   convert_document(
     document,
@@ -86,14 +86,14 @@ pub fn convert_document_to_markdown(
 /// Converts a document tree using the requested output format.
 pub fn convert_document(
   document : DocumentElement,
-  output_format? : OutputFormat = Html,
-  style_map? : Array[String] = [],
-  include_default_style_map? : Bool = true,
-  ignore_empty_paragraphs? : Bool = true,
-  id_prefix? : String = "",
-  pretty_print? : Bool = false,
-  convert_image? : (Image) -> ImageConversion = data_uri_image_converter,
-  transform_document? : (DocumentElement) -> DocumentElement = identity_document_transform,
+  output_format~ : OutputFormat = Html,
+  style_map~ : Array[String] = [],
+  include_default_style_map~ : Bool = true,
+  ignore_empty_paragraphs~ : Bool = true,
+  id_prefix~ : String = "",
+  pretty_print~ : Bool = false,
+  convert_image~ : (Image) -> ImageConversion = data_uri_image_converter,
+  transform_document~ : (DocumentElement) -> DocumentElement = identity_document_transform,
 ) -> ConversionResult {
   let converted = convert_document_to_nodes(
     document,
@@ -109,18 +109,18 @@ pub fn convert_document(
     Html => write_html(nodes, pretty_print~)
     Markdown => write_markdown(nodes)
   }
-  { value, messages: converted.messages }
+  { value, messages: converted.messages, }
 }
 
 ///|
 fn convert_document_to_nodes(
   document : DocumentElement,
-  style_map? : Array[String] = [],
-  include_default_style_map? : Bool = true,
-  ignore_empty_paragraphs? : Bool = true,
-  id_prefix? : String = "",
-  convert_image? : (Image) -> ImageConversion = data_uri_image_converter,
-  transform_document? : (DocumentElement) -> DocumentElement = identity_document_transform,
+  style_map~ : Array[String] = [],
+  include_default_style_map~ : Bool = true,
+  ignore_empty_paragraphs~ : Bool = true,
+  id_prefix~ : String = "",
+  convert_image~ : (Image) -> ImageConversion = data_uri_image_converter,
+  transform_document~ : (DocumentElement) -> DocumentElement = identity_document_transform,
 ) -> ConvertedNodes {
   let document = transform_document(document)
   let all_style_lines : Array[String] = []
@@ -147,7 +147,7 @@ fn convert_document_to_nodes(
     image_converter: convert_image,
   }
   let nodes = converter.convert_element(document)
-  { nodes, messages: @core.dedupe_messages(converter.messages) }
+  { nodes, messages: @core.dedupe_messages(converter.messages), }
 }
 
 ///|
@@ -155,10 +155,10 @@ priv struct DocumentConverter {
   options : ConvertOptions
   messages : Array[Message]
   note_references : Array[NoteReferenceInfo]
-  mut note_number : Int
+  mut note_number : Int32
   comments : Array[Comment]
   comment_references : Array[CommentReferenceInfo]
-  mut comment_number : Int
+  mut comment_number : Int32
   image_converter : (Image) -> ImageConversion
 }
 
@@ -248,7 +248,7 @@ fn DocumentConverter::convert_element(
     NoteReference(note_type~, note_id~) => {
       let label = self.note_number.to_string()
       self.note_number = self.note_number + 1
-      self.note_references.push({ note_type, note_id })
+      self.note_references.push({ note_type, note_id, })
       let id = self.options.id_prefix + note_type + "-ref-" + note_id
       let href = "#" + self.options.id_prefix + note_type + "-" + note_id
       [
@@ -313,7 +313,7 @@ fn DocumentConverter::convert_paragraph(
     []
   } else {
     let default_path : Array[HtmlPathElement] = [
-      { tag: "p", attributes: {}, fresh: true, separator: None },
+      { tag: "p", attributes: {}, fresh: true, separator: None, },
     ]
     if @style_map.find_style_mapping(element, self.options.style_map) == None {
       self.warn_unrecognised_style(
@@ -369,9 +369,13 @@ fn DocumentConverter::convert_run(
   }
   match properties.vertical_alignment {
     Superscript =>
-      paths.push([{ tag: "sup", attributes: {}, fresh: false, separator: None }])
+      paths.push([
+        { tag: "sup", attributes: {}, fresh: false, separator: None, },
+      ])
     Subscript =>
-      paths.push([{ tag: "sub", attributes: {}, fresh: false, separator: None }])
+      paths.push([
+        { tag: "sub", attributes: {}, fresh: false, separator: None, },
+      ])
     Baseline => ()
   }
   if properties.is_italic {
@@ -433,7 +437,7 @@ fn path_for_property(
     }
   }
   match default_tag {
-    Some(tag) => [{ tag, attributes: {}, fresh: false, separator: None }]
+    Some(tag) => [{ tag, attributes: {}, fresh: false, separator: None, }]
     None => []
   }
 }
@@ -464,7 +468,7 @@ fn DocumentConverter::convert_table(
 ) -> Array[HtmlNode] {
   let rows = force_write_nodes(self.convert_table_children(children))
   let default_path : Array[HtmlPathElement] = [
-    { tag: "table", attributes: {}, fresh: true, separator: None },
+    { tag: "table", attributes: {}, fresh: true, separator: None, },
   ]
   ignore(properties)
   self.wrap_with_style(element, rows, default_path)
@@ -505,7 +509,7 @@ fn DocumentConverter::convert_table_children(
 }
 
 ///|
-fn first_body_row_index(children : Array[DocumentElement]) -> Int {
+fn first_body_row_index(children : Array[DocumentElement]) -> Int32 {
   let mut index = 0
   for child in children {
     match child {
@@ -520,8 +524,8 @@ fn first_body_row_index(children : Array[DocumentElement]) -> Int {
 fn DocumentConverter::convert_table_segment(
   self : DocumentConverter,
   children : Array[DocumentElement],
-  start~ : Int,
-  end~ : Int,
+  start~ : Int32,
+  end~ : Int32,
   as_header~ : Bool,
 ) -> Array[HtmlNode] {
   let nodes : Array[HtmlNode] = []
@@ -563,8 +567,8 @@ fn DocumentConverter::convert_table_row(
 fn DocumentConverter::convert_table_cell(
   self : DocumentConverter,
   children : Array[DocumentElement],
-  col_span~ : Int,
-  row_span~ : Int,
+  col_span~ : Int32,
+  row_span~ : Int32,
   as_header~ : Bool,
 ) -> HtmlNode {
   let attrs : Map[String, String] = {}
@@ -747,7 +751,7 @@ fn DocumentConverter::convert_comment_reference(
             self.comment_number.to_string() +
             "]"
           self.comment_number = self.comment_number + 1
-          self.comment_references.push({ comment_id, label })
+          self.comment_references.push({ comment_id, label, })
           let id = self.options.id_prefix + "comment-ref-" + comment_id
           let href = "#" + self.options.id_prefix + "comment-" + comment_id
           wrap_html_path(mapping.to, [

@@ -21,7 +21,7 @@ priv struct StyleInfo {
 ///|
 priv struct NumberingLevel {
   is_ordered : Bool
-  level : Int
+  level : Int32
   paragraph_style_id : String?
 }
 
@@ -83,7 +83,7 @@ fn external_file_access_options(
   enabled : Bool,
   read_file : (String) -> Bytes?,
 ) -> ExternalFileAccess {
-  { enabled, read_file }
+  { enabled, read_file, }
 }
 
 ///|
@@ -107,24 +107,24 @@ priv struct TableRowForSpan {
 ///|
 priv struct TableCellForSpan {
   children : Array[DocumentElement]
-  col_span : Int
-  row_span : Int
+  col_span : Int32
+  row_span : Int32
 }
 
 ///|
 /// Converts DOCX bytes to HTML.
 pub fn convert_to_html(
   docx : BytesView,
-  style_map? : Array[String] = [],
-  include_default_style_map? : Bool = true,
-  include_embedded_style_map? : Bool = true,
-  ignore_empty_paragraphs? : Bool = true,
-  id_prefix? : String = "",
-  pretty_print? : Bool = false,
-  convert_image? : (Image) -> ImageConversion = data_uri_image_converter,
-  transform_document? : (DocumentElement) -> DocumentElement = identity_document_transform,
-  external_file_access? : Bool = false,
-  read_external_file? : (String) -> Bytes? = no_external_file_reader,
+  style_map~ : Array[String] = [],
+  include_default_style_map~ : Bool = true,
+  include_embedded_style_map~ : Bool = true,
+  ignore_empty_paragraphs~ : Bool = true,
+  id_prefix~ : String = "",
+  pretty_print~ : Bool = false,
+  convert_image~ : (Image) -> ImageConversion = data_uri_image_converter,
+  transform_document~ : (DocumentElement) -> DocumentElement = identity_document_transform,
+  external_file_access~ : Bool = false,
+  read_external_file~ : (String) -> Bytes? = no_external_file_reader,
 ) -> ConversionResult raise DocxError {
   convert(
     docx,
@@ -146,15 +146,15 @@ pub fn convert_to_html(
 /// Converts DOCX bytes to Markdown.
 pub fn convert_to_markdown(
   docx : BytesView,
-  style_map? : Array[String] = [],
-  include_default_style_map? : Bool = true,
-  include_embedded_style_map? : Bool = true,
-  ignore_empty_paragraphs? : Bool = true,
-  id_prefix? : String = "",
-  convert_image? : (Image) -> ImageConversion = data_uri_image_converter,
-  transform_document? : (DocumentElement) -> DocumentElement = identity_document_transform,
-  external_file_access? : Bool = false,
-  read_external_file? : (String) -> Bytes? = no_external_file_reader,
+  style_map~ : Array[String] = [],
+  include_default_style_map~ : Bool = true,
+  include_embedded_style_map~ : Bool = true,
+  ignore_empty_paragraphs~ : Bool = true,
+  id_prefix~ : String = "",
+  convert_image~ : (Image) -> ImageConversion = data_uri_image_converter,
+  transform_document~ : (DocumentElement) -> DocumentElement = identity_document_transform,
+  external_file_access~ : Bool = false,
+  read_external_file~ : (String) -> Bytes? = no_external_file_reader,
 ) -> ConversionResult raise DocxError {
   convert(
     docx,
@@ -175,17 +175,17 @@ pub fn convert_to_markdown(
 /// Converts DOCX bytes using the requested output format.
 pub fn convert(
   docx : BytesView,
-  output_format? : OutputFormat = Html,
-  style_map? : Array[String] = [],
-  include_default_style_map? : Bool = true,
-  include_embedded_style_map? : Bool = true,
-  ignore_empty_paragraphs? : Bool = true,
-  id_prefix? : String = "",
-  pretty_print? : Bool = false,
-  convert_image? : (Image) -> ImageConversion = data_uri_image_converter,
-  transform_document? : (DocumentElement) -> DocumentElement = identity_document_transform,
-  external_file_access? : Bool = false,
-  read_external_file? : (String) -> Bytes? = no_external_file_reader,
+  output_format~ : OutputFormat = Html,
+  style_map~ : Array[String] = [],
+  include_default_style_map~ : Bool = true,
+  include_embedded_style_map~ : Bool = true,
+  ignore_empty_paragraphs~ : Bool = true,
+  id_prefix~ : String = "",
+  pretty_print~ : Bool = false,
+  convert_image~ : (Image) -> ImageConversion = data_uri_image_converter,
+  transform_document~ : (DocumentElement) -> DocumentElement = identity_document_transform,
+  external_file_access~ : Bool = false,
+  read_external_file~ : (String) -> Bytes? = no_external_file_reader,
 ) -> ConversionResult raise DocxError {
   let zip = open_zip(docx)
   let read_result = read_docx_zip_with_messages(
@@ -217,8 +217,8 @@ pub fn convert(
 /// Extracts raw text from DOCX bytes.
 pub fn extract_raw_text(
   docx : BytesView,
-  external_file_access? : Bool = false,
-  read_external_file? : (String) -> Bytes? = no_external_file_reader,
+  external_file_access~ : Bool = false,
+  read_external_file~ : (String) -> Bytes? = no_external_file_reader,
 ) -> ConversionResult raise DocxError {
   let read_result = read_docx_zip_with_messages(
     open_zip(docx),
@@ -242,7 +242,7 @@ fn prepend_messages(
     let combined : Array[Message] = []
     combined.append(messages)
     combined.append(result.messages)
-    { value: result.value, messages: @core.dedupe_messages(combined) }
+    { value: result.value, messages: @core.dedupe_messages(combined), }
   }
 }
 
@@ -280,8 +280,8 @@ fn read_embedded_style_map_from_zip(
 /// Reads DOCX bytes into a document tree.
 pub fn read_docx(
   docx : BytesView,
-  external_file_access? : Bool = false,
-  read_external_file? : (String) -> Bytes? = no_external_file_reader,
+  external_file_access~ : Bool = false,
+  read_external_file~ : (String) -> Bytes? = no_external_file_reader,
 ) -> DocumentElement raise DocxError {
   read_docx_with_messages(docx, external_file_access~, read_external_file~).document
 }
@@ -290,8 +290,8 @@ pub fn read_docx(
 /// Reads DOCX bytes into a document tree and diagnostics.
 pub fn read_docx_with_messages(
   docx : BytesView,
-  external_file_access? : Bool = false,
-  read_external_file? : (String) -> Bytes? = no_external_file_reader,
+  external_file_access~ : Bool = false,
+  read_external_file~ : (String) -> Bytes? = no_external_file_reader,
 ) -> DocxReadResult raise DocxError {
   read_docx_zip_with_messages(
     open_zip(docx),
@@ -304,8 +304,8 @@ pub fn read_docx_with_messages(
 ///|
 fn read_docx_zip_with_messages(
   zip : ZipArchive,
-  external_files? : ExternalFileAccess = default_external_file_access(),
-  read_images? : Bool = true,
+  external_files~ : ExternalFileAccess = default_external_file_access(),
+  read_images~ : Bool = true,
 ) -> DocxReadResult raise DocxError {
   let main_document_path = find_main_document_path(zip)
   let relationships = read_relationships(
@@ -440,7 +440,7 @@ fn read_relationships(
       read_relationships_xml(
         read_xml_string(text, namespace_map=office_namespace_map()),
       )
-    None => { relationships: [] }
+    None => { relationships: [], }
   }
 }
 
@@ -545,7 +545,7 @@ fn read_content_types(zip : ZipArchive) -> ContentTypes raise DocxError {
     }
     None => ()
   }
-  { defaults, overrides }
+  { defaults, overrides, }
 }
 
 ///|
@@ -763,7 +763,7 @@ fn NumberingMap::find_level_by_paragraph_style_id(
 
 ///|
 fn NumberingLevel::to_numbering(self : NumberingLevel) -> Numbering {
-  { is_ordered: self.is_ordered, level: self.level }
+  { is_ordered: self.is_ordered, level: self.level, }
 }
 
 ///|
@@ -774,8 +774,8 @@ fn read_notes_for_document(
   content_types : ContentTypes,
   document_relationships : Relationships,
   base_path : String,
-  external_files? : ExternalFileAccess = default_external_file_access(),
-  read_images? : Bool = true,
+  external_files~ : ExternalFileAccess = default_external_file_access(),
+  read_images~ : Bool = true,
 ) -> NotesReadResult raise DocxError {
   let notes : Array[Note] = []
   let messages : Array[Message] = []
@@ -809,7 +809,7 @@ fn read_notes_for_document(
   )
   notes.append(endnotes.notes)
   messages.append(endnotes.messages)
-  { notes, messages: @core.dedupe_messages(messages) }
+  { notes, messages: @core.dedupe_messages(messages), }
 }
 
 ///|
@@ -823,8 +823,8 @@ fn read_note_part(
   content_types~ : ContentTypes,
   document_relationships~ : Relationships,
   base_path~ : String,
-  external_files? : ExternalFileAccess = default_external_file_access(),
-  read_images? : Bool = true,
+  external_files~ : ExternalFileAccess = default_external_file_access(),
+  read_images~ : Bool = true,
 ) -> NotesReadResult raise DocxError {
   let path = find_part_path(
     zip,
@@ -834,7 +834,7 @@ fn read_note_part(
     fallback_path~,
   )
   if !zip.exists(path) {
-    return { notes: [], messages: [] }
+    return { notes: [], messages: [], }
   }
   let part_relationships = read_relationships(
     zip,
@@ -864,7 +864,7 @@ fn read_note_part(
       })
     }
   }
-  { notes, messages: reader.messages }
+  { notes, messages: reader.messages, }
 }
 
 ///|
@@ -875,8 +875,8 @@ fn read_comments_for_document(
   content_types : ContentTypes,
   document_relationships : Relationships,
   base_path : String,
-  external_files? : ExternalFileAccess = default_external_file_access(),
-  read_images? : Bool = true,
+  external_files~ : ExternalFileAccess = default_external_file_access(),
+  read_images~ : Bool = true,
 ) -> CommentsReadResult raise DocxError {
   let path = find_part_path(
     zip,
@@ -886,7 +886,7 @@ fn read_comments_for_document(
     fallback_path="word/comments.xml",
   )
   if !zip.exists(path) {
-    return { comments: [], messages: [] }
+    return { comments: [], messages: [], }
   }
   let part_relationships = read_relationships(
     zip,
@@ -915,7 +915,7 @@ fn read_comments_for_document(
       author_initials: read_optional_attribute(comment_element, "w:initials"),
     })
   }
-  { comments, messages: reader.messages }
+  { comments, messages: reader.messages, }
 }
 
 ///|
@@ -1012,8 +1012,8 @@ fn read_document_xml_with_messages(
   base_path : String,
   notes : Array[Note],
   comments : Array[Comment],
-  external_files? : ExternalFileAccess = default_external_file_access(),
-  read_images? : Bool = true,
+  external_files~ : ExternalFileAccess = default_external_file_access(),
+  read_images~ : Bool = true,
 ) -> DocxReadResult raise DocxError {
   let body = match root.first("w:body") {
     Some(body) => body
@@ -1244,7 +1244,7 @@ fn symbol_to_unicode(font : String, char : String) -> String? {
 }
 
 ///|
-fn parse_dingbat_hex(value : String) -> Int? {
+fn parse_dingbat_hex(value : String) -> Int32? {
   let mut index = 0
   while index < value.length() && is_field_whitespace(value[index]) {
     index += 1
@@ -1507,7 +1507,7 @@ fn parse_hyperlink_field_instruction(
 }
 
 ///|
-fn read_field_location(value : String, index : Int) -> String? {
+fn read_field_location(value : String, index : Int32) -> String? {
   if index >= value.length() {
     None
   } else if value[index] == '"' {
@@ -1523,7 +1523,7 @@ fn read_field_location(value : String, index : Int) -> String? {
 }
 
 ///|
-fn read_unquoted_field_location(value : String, index : Int) -> String? {
+fn read_unquoted_field_location(value : String, index : Int32) -> String? {
   if index >= value.length() || value[index] == '\\' {
     None
   } else {
@@ -1532,7 +1532,7 @@ fn read_unquoted_field_location(value : String, index : Int) -> String? {
 }
 
 ///|
-fn read_until_field_whitespace(value : String, start : Int) -> String {
+fn read_until_field_whitespace(value : String, start : Int32) -> String {
   let mut index = start
   while index < value.length() {
     let char = value[index]
@@ -1545,7 +1545,7 @@ fn read_until_field_whitespace(value : String, start : Int) -> String {
 }
 
 ///|
-fn skip_field_whitespace(value : String, start : Int) -> Int {
+fn skip_field_whitespace(value : String, start : Int32) -> Int32 {
   let mut index = start
   while index < value.length() && is_field_whitespace(value[index]) {
     index = index + 1
@@ -1559,7 +1559,7 @@ fn is_field_whitespace(char : UInt16) -> Bool {
 }
 
 ///|
-fn field_starts_with_at(value : String, index : Int, prefix : String) -> Bool {
+fn field_starts_with_at(value : String, index : Int32, prefix : String) -> Bool {
   index + prefix.length() <= value.length() &&
   value[index:index + prefix.length()].to_owned() == prefix
 }
@@ -1996,7 +1996,7 @@ fn read_vertical_alignment(value : String?) -> VerticalAlignment {
 }
 
 ///|
-fn read_font_size(value : String?) -> Int? {
+fn read_font_size(value : String?) -> Int32? {
   match value {
     Some(text) =>
       if is_ascii_decimal_string(text) {
@@ -2325,7 +2325,7 @@ fn external_file_candidate_paths(target : String) -> Array[String] {
 }
 
 ///|
-fn external_uri_to_path(uri : String, platform? : String = "") -> String? {
+fn external_uri_to_path(uri : String, platform~ : String = "") -> String? {
   let raw_path = if uri.has_prefix("file://") {
     local_file_uri_path(uri)
   } else if is_relative_uri(uri) {
@@ -2393,7 +2393,7 @@ fn strip_uri_fragment(uri : String) -> String {
 }
 
 ///|
-fn find_uri_scheme_colon(uri : String) -> Int? {
+fn find_uri_scheme_colon(uri : String) -> Int32? {
   if uri.length() == 0 || !is_uri_scheme_start(uri[0]) {
     return None
   }
@@ -2460,7 +2460,7 @@ fn percent_decode_uri_path(path : String) -> String? {
 }
 
 ///|
-fn hex_value(char : UInt16) -> Int? {
+fn hex_value(char : UInt16) -> Int32? {
   if char >= '0' && char <= '9' {
     Some(char.to_int() - '0'.to_int())
   } else if char >= 'A' && char <= 'F' {
@@ -2487,7 +2487,7 @@ fn BodyReader::make_image(
       " is unlikely to display in web browsers",
     )
   }
-  { content_type, alt_text, data }
+  { content_type, alt_text, data, }
 }
 
 ///|
@@ -2546,7 +2546,7 @@ fn BodyReader::read_table_properties(
     element.first_or_empty("w:tblStyle"),
     "w:val",
   )
-  { style_id, style_name: self.style_name(style_id, "table") }
+  { style_id, style_name: self.style_name(style_id, "table"), }
 }
 
 ///|
@@ -2582,7 +2582,7 @@ fn BodyReader::read_table_cell(
 }
 
 ///|
-fn parse_grid_span(value : String) -> Int {
+fn parse_grid_span(value : String) -> Int32 {
   let mut index = 0
   while index < value.length() && is_field_whitespace(value[index]) {
     index += 1
@@ -2613,7 +2613,7 @@ fn parse_grid_span(value : String) -> Int {
 }
 
 ///|
-fn decimal_digit_value(char : UInt16) -> Int? {
+fn decimal_digit_value(char : UInt16) -> Int32? {
   if char >= '0' && char <= '9' {
     Some(char.to_int() - '0'.to_int())
   } else {
@@ -2657,7 +2657,7 @@ fn BodyReader::calculate_table_row_spans(
     for child in children {
       match child {
         TableCell(children=cell_children, col_span~, row_span~) =>
-          cells.push({ children: cell_children, col_span, row_span })
+          cells.push({ children: cell_children, col_span, row_span, })
         _ => {
           self.warn(
             "unexpected non-cell element in table row, cell merging may be incorrect",
@@ -2666,7 +2666,7 @@ fn BodyReader::calculate_table_row_spans(
         }
       }
     }
-    typed_rows.push({ cells, is_header })
+    typed_rows.push({ cells, is_header, })
   }
   self.calculate_typed_table_row_spans(typed_rows)
 }
@@ -2676,10 +2676,10 @@ fn BodyReader::calculate_typed_table_row_spans(
   _self : BodyReader,
   elements : Array[TableRowForSpan],
 ) -> Array[DocumentElement] {
-  let row_spans : Array[Array[Int]] = []
+  let row_spans : Array[Array[Int32]] = []
   let skip_cells : Array[Array[Bool]] = []
   for row in elements {
-    let spans : Array[Int] = []
+    let spans : Array[Int32] = []
     let skips : Array[Bool] = []
     for _ in row.cells {
       spans.push(1)
@@ -2688,7 +2688,7 @@ fn BodyReader::calculate_typed_table_row_spans(
     row_spans.push(spans)
     skip_cells.push(skips)
   }
-  let open_cells : Map[Int, (Int, Int)] = {}
+  let open_cells : Map[Int32, (Int32, Int32)] = {}
   for row_index in 0..<elements.length() {
     let mut column_index = 0
     for cell_index in 0..<elements[row_index].cells.length() {

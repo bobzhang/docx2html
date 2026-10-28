@@ -1,6 +1,6 @@
 ///|
 // Vendored from .repos/mammoth/node_modules/dingbat-to-unicode/dist/dingbats.js.
-fn dingbat_to_unicode(font : String, code : Int) -> String? {
+fn dingbat_to_unicode(font : String, code : Int32) -> String? {
   match font.to_upper() + "_" + code.to_string() {
     "SYMBOL_100" => Some("\u{3B4}")
     "SYMBOL_101" => Some("\u{3B5}")

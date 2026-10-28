@@ -17,7 +17,7 @@ pub fn open_zip(data : BytesView) -> ZipArchive raise DocxError {
     let (name, content) = entry
     map[name] = Bytes::from_array(content)
   }
-  { entries: map }
+  { entries: map, }
 }
 
 ///|

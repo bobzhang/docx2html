@@ -50,7 +50,7 @@ fn unzip_write_entries(
   let entries : Array[ZipWriteEntry] = []
   for item in unzipped {
     let (path, content) = item
-    entries.push({ path, content: Bytes::from_array(content) })
+    entries.push({ path, content: Bytes::from_array(content), })
   }
   entries
 }
@@ -61,7 +61,7 @@ fn zip_archive_from_write_entries(entries : Array[ZipWriteEntry]) -> ZipArchive 
   for entry in entries {
     map[entry.path] = entry.content
   }
-  { entries: map }
+  { entries: map, }
 }
 
 ///|
@@ -72,11 +72,11 @@ fn replace_or_append_zip_entry(
 ) -> Unit {
   for index in 0..<entries.length() {
     if entries[index].path == path {
-      entries[index] = { path, content }
+      entries[index] = { path, content, }
       return
     }
   }
-  entries.push({ path, content })
+  entries.push({ path, content, })
 }
 
 ///|

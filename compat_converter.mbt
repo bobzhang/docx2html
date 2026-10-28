@@ -10,7 +10,7 @@ pub type ImageConversion = @converter.ImageConversion
 /// Builds an image conversion result from rendered nodes and diagnostics.
 pub fn image_conversion(
   nodes : Array[HtmlNode],
-  messages? : Array[Message] = [],
+  messages~ : Array[Message] = [],
 ) -> ImageConversion {
   @converter.image_conversion(nodes, messages~)
 }
@@ -19,13 +19,13 @@ pub fn image_conversion(
 /// Converts a document tree to HTML.
 pub fn convert_document_to_html(
   document : DocumentElement,
-  style_map? : Array[String] = [],
-  include_default_style_map? : Bool = true,
-  ignore_empty_paragraphs? : Bool = true,
-  id_prefix? : String = "",
-  pretty_print? : Bool = false,
-  convert_image? : (Image) -> ImageConversion = @converter.data_uri_image_converter,
-  transform_document? : (DocumentElement) -> DocumentElement = @document.identity_document_transform,
+  style_map~ : Array[String] = [],
+  include_default_style_map~ : Bool = true,
+  ignore_empty_paragraphs~ : Bool = true,
+  id_prefix~ : String = "",
+  pretty_print~ : Bool = false,
+  convert_image~ : (Image) -> ImageConversion = @converter.data_uri_image_converter,
+  transform_document~ : (DocumentElement) -> DocumentElement = @document.identity_document_transform,
 ) -> ConversionResult {
   @converter.convert_document_to_html(
     document,
@@ -43,12 +43,12 @@ pub fn convert_document_to_html(
 /// Converts a document tree to Markdown.
 pub fn convert_document_to_markdown(
   document : DocumentElement,
-  style_map? : Array[String] = [],
-  include_default_style_map? : Bool = true,
-  ignore_empty_paragraphs? : Bool = true,
-  id_prefix? : String = "",
-  convert_image? : (Image) -> ImageConversion = @converter.data_uri_image_converter,
-  transform_document? : (DocumentElement) -> DocumentElement = @document.identity_document_transform,
+  style_map~ : Array[String] = [],
+  include_default_style_map~ : Bool = true,
+  ignore_empty_paragraphs~ : Bool = true,
+  id_prefix~ : String = "",
+  convert_image~ : (Image) -> ImageConversion = @converter.data_uri_image_converter,
+  transform_document~ : (DocumentElement) -> DocumentElement = @document.identity_document_transform,
 ) -> ConversionResult {
   @converter.convert_document_to_markdown(
     document,
@@ -65,14 +65,14 @@ pub fn convert_document_to_markdown(
 /// Converts a document tree using the requested output format.
 pub fn convert_document(
   document : DocumentElement,
-  output_format? : OutputFormat = Html,
-  style_map? : Array[String] = [],
-  include_default_style_map? : Bool = true,
-  ignore_empty_paragraphs? : Bool = true,
-  id_prefix? : String = "",
-  pretty_print? : Bool = false,
-  convert_image? : (Image) -> ImageConversion = @converter.data_uri_image_converter,
-  transform_document? : (DocumentElement) -> DocumentElement = @document.identity_document_transform,
+  output_format~ : OutputFormat = Html,
+  style_map~ : Array[String] = [],
+  include_default_style_map~ : Bool = true,
+  ignore_empty_paragraphs~ : Bool = true,
+  id_prefix~ : String = "",
+  pretty_print~ : Bool = false,
+  convert_image~ : (Image) -> ImageConversion = @converter.data_uri_image_converter,
+  transform_document~ : (DocumentElement) -> DocumentElement = @document.identity_document_transform,
 ) -> ConversionResult {
   @converter.convert_document(
     document,

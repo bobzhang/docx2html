@@ -8,9 +8,9 @@ type DocumentMatcher = @style_map.DocumentMatcher
 ///|
 fn hyperlink(
   children : Array[DocumentElement],
-  href? : String? = None,
-  anchor? : String? = None,
-  target_frame? : String? = None,
+  href~ : String? = None,
+  anchor~ : String? = None,
+  target_frame~ : String? = None,
 ) -> DocumentElement {
   @document.hyperlink(children, href~, anchor~, target_frame~)
 }
@@ -18,7 +18,7 @@ fn hyperlink(
 ///|
 fn table(
   children : Array[DocumentElement],
-  properties? : TableProperties = @document.TableProperties::default(),
+  properties~ : TableProperties = @document.TableProperties::default(),
 ) -> DocumentElement {
   @document.table(children, properties~)
 }
@@ -26,7 +26,7 @@ fn table(
 ///|
 fn table_row(
   children : Array[DocumentElement],
-  is_header? : Bool = false,
+  is_header~ : Bool = false,
 ) -> DocumentElement {
   @document.table_row(children, is_header~)
 }
@@ -34,8 +34,8 @@ fn table_row(
 ///|
 fn table_cell(
   children : Array[DocumentElement],
-  col_span? : Int = 1,
-  row_span? : Int = 1,
+  col_span~ : Int32 = 1,
+  row_span~ : Int32 = 1,
 ) -> DocumentElement {
   @document.table_cell(children, col_span~, row_span~)
 }
@@ -48,13 +48,13 @@ fn xml_text(value : String) -> XmlNode {
 ///|
 fn convert_document_to_html(
   document : DocumentElement,
-  style_map? : Array[String] = [],
-  include_default_style_map? : Bool = true,
-  ignore_empty_paragraphs? : Bool = true,
-  id_prefix? : String = "",
-  pretty_print? : Bool = false,
-  convert_image? : (Image) -> ImageConversion = @converter.data_uri_image_converter,
-  transform_document? : (DocumentElement) -> DocumentElement = @document.identity_document_transform,
+  style_map~ : Array[String] = [],
+  include_default_style_map~ : Bool = true,
+  ignore_empty_paragraphs~ : Bool = true,
+  id_prefix~ : String = "",
+  pretty_print~ : Bool = false,
+  convert_image~ : (Image) -> ImageConversion = @converter.data_uri_image_converter,
+  transform_document~ : (DocumentElement) -> DocumentElement = @document.identity_document_transform,
 ) -> ConversionResult {
   @converter.convert_document_to_html(
     document,
@@ -72,9 +72,9 @@ fn convert_document_to_html(
 fn empty_body_reader(relationships : Relationships) -> BodyReader {
   {
     styles: {},
-    zip: { entries: {} },
+    zip: { entries: {}, },
     relationships,
-    content_types: { defaults: {}, overrides: {} },
+    content_types: { defaults: {}, overrides: {}, },
     base_path: "word",
     numbering: NumberingMap::empty(),
     messages: [],
@@ -90,9 +90,9 @@ fn body_reader_with_numbering(
 ) -> BodyReader {
   {
     styles,
-    zip: { entries: {} },
-    relationships: { relationships: [] },
-    content_types: { defaults: {}, overrides: {} },
+    zip: { entries: {}, },
+    relationships: { relationships: [], },
+    content_types: { defaults: {}, overrides: {}, },
     base_path: "word",
     numbering,
     messages: [],
@@ -143,7 +143,7 @@ fn empty_docx_zip() -> ZipArchive {
 ///|
 fn run_properties_from_xml(
   properties_xml : String,
-  styles? : Map[String, StyleInfo] = {},
+  styles~ : Map[String, StyleInfo] = {},
 ) -> RunProperties raise DocxError {
   let xml = "<w:r xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\"><w:rPr>" +
     properties_xml +
@@ -164,13 +164,13 @@ fn body_elements_from_xml(
     element_xml +
     "</w:root>"
   let root = read_xml_string(xml, namespace_map=office_namespace_map())
-  empty_body_reader({ relationships: [] }).read_children(root.children)
+  empty_body_reader({ relationships: [], }).read_children(root.children)
 }
 
 ///|
 fn paragraph_properties_from_xml(
   properties_xml : String,
-  styles? : Map[String, StyleInfo] = {},
+  styles~ : Map[String, StyleInfo] = {},
 ) -> ParagraphProperties raise DocxError {
   let xml = "<w:p xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\"><w:pPr>" +
     properties_xml +
@@ -208,8 +208,8 @@ fn footnotes_from_xml(xml : String) -> NotesReadResult raise DocxError {
     fallback_path="word/footnotes.xml",
     styles={},
     numbering=NumberingMap::empty(),
-    content_types={ defaults: {}, overrides: {} },
-    document_relationships={ relationships: [] },
+    content_types={ defaults: {}, overrides: {}, },
+    document_relationships={ relationships: [], },
     base_path="word",
   )
 }
@@ -220,8 +220,8 @@ fn comments_from_xml(xml : String) -> CommentsReadResult raise DocxError {
     zip_with_text("word/comments.xml", xml),
     {},
     NumberingMap::empty(),
-    { defaults: {}, overrides: {} },
-    { relationships: [] },
+    { defaults: {}, overrides: {}, },
+    { relationships: [], },
     "word",
   )
 }
@@ -267,21 +267,21 @@ test "style document matchers follow Mammoth predicate semantics" {
   let ordered_level_one = paragraph([], properties={
     style_id: None,
     style_name: None,
-    numbering: Some({ is_ordered: true, level: 1 }),
+    numbering: Some({ is_ordered: true, level: 1, }),
     alignment: None,
     indent: Indent::default(),
   })
   let ordered_level_zero = paragraph([], properties={
     style_id: None,
     style_name: None,
-    numbering: Some({ is_ordered: true, level: 0 }),
+    numbering: Some({ is_ordered: true, level: 0, }),
     alignment: None,
     indent: Indent::default(),
   })
   let unordered_level_one = paragraph([], properties={
     style_id: None,
     style_name: None,
-    numbering: Some({ is_ordered: false, level: 1 }),
+    numbering: Some({ is_ordered: false, level: 1, }),
     alignment: None,
     indent: Indent::default(),
   })
@@ -353,22 +353,22 @@ test "style document matchers follow Mammoth predicate semantics" {
       @style_map.ParagraphMatcher(
         style_id=None,
         style_name=None,
-        numbering=Some({ is_ordered: true, level: 1 }),
+        numbering=Some({ is_ordered: true, level: 1, }),
       ).matches(plain),
       @style_map.ParagraphMatcher(
         style_id=None,
         style_name=None,
-        numbering=Some({ is_ordered: true, level: 1 }),
+        numbering=Some({ is_ordered: true, level: 1, }),
       ).matches(ordered_level_one),
       @style_map.ParagraphMatcher(
         style_id=None,
         style_name=None,
-        numbering=Some({ is_ordered: true, level: 1 }),
+        numbering=Some({ is_ordered: true, level: 1, }),
       ).matches(ordered_level_zero),
       @style_map.ParagraphMatcher(
         style_id=None,
         style_name=None,
-        numbering=Some({ is_ordered: true, level: 1 }),
+        numbering=Some({ is_ordered: true, level: 1, }),
       ).matches(unordered_level_one),
       @style_map.HighlightMatcher(None).matches(plain),
       @style_map.HighlightMatcher(None).matches(highlighted),
@@ -403,7 +403,7 @@ test "style document matchers follow Mammoth predicate semantics" {
 
 ///|
 test "docx content types include Mammoth image fallbacks" {
-  let content_types = ContentTypes::{ defaults: {}, overrides: {} }
+  let content_types = ContentTypes::{ defaults: {}, overrides: {}, }
   inspect(
     content_types.find_content_type("word/media/hat.png"),
     content="image/png",
@@ -689,7 +689,7 @@ test "docx related part paths use existing relationship targets before fallbacks
 
 ///|
 test "docx xml part reader reports missing parts" {
-  try read_xml_part({ entries: {} }, "word/missing.xml") catch {
+  try read_xml_part({ entries: {}, }, "word/missing.xml") catch {
     MissingPart(message~) =>
       inspect(message, content="missing DOCX part: word/missing.xml")
     _ => fail("expected MissingPart")
@@ -852,7 +852,7 @@ test "docx reader leaves missing paragraph properties empty" {
 
 ///|
 test "docx reader treats empty style references as missing like Mammoth" {
-  let reader = empty_body_reader({ relationships: [] })
+  let reader = empty_body_reader({ relationships: [], })
   let paragraph_xml =
     #|<w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:pPr><w:pStyle w:val="" /></w:pPr></w:p>
   match
@@ -936,7 +936,7 @@ test "docx body reader uses mc fallback content like Mammoth" {
     namespace_map=office_namespace_map(),
   )
   debug_inspect(
-    empty_body_reader({ relationships: [] }).read_element(with_fallback),
+    empty_body_reader({ relationships: [], }).read_element(with_fallback),
     content="[Text(\"Fallback\")]",
   )
   let without_fallback_xml =
@@ -946,7 +946,7 @@ test "docx body reader uses mc fallback content like Mammoth" {
     namespace_map=office_namespace_map(),
   )
   debug_inspect(
-    empty_body_reader({ relationships: [] }).read_element(without_fallback),
+    empty_body_reader({ relationships: [], }).read_element(without_fallback),
     content="[]",
   )
 }
@@ -1005,7 +1005,7 @@ test "docx reader ignores Mammoth ignored body elements without warnings" {
   let xml =
     #|<w:root xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:annotationRef /><w:bookmarkEnd /><w:sectPr /><w:proofErr /><w:lastRenderedPageBreak /><w:commentRangeStart /><w:commentRangeEnd /><w:del /><w:footnoteRef /><w:endnoteRef /><w:txbxContent /><w:pPr /><w:rPr /><w:tblPr /><w:tblGrid /><w:trPr /></w:root>
   let root = read_xml_string(xml, namespace_map=office_namespace_map())
-  let reader = empty_body_reader({ relationships: [] })
+  let reader = empty_body_reader({ relationships: [], })
   debug_inspect(reader.read_children(root.children), content="[]")
   debug_inspect(reader.messages, content="[]")
 }
@@ -1115,7 +1115,7 @@ test "docx reader does not include run properties as run children" {
   let xml =
     #|<w:r xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:rPr><w:rStyle w:val="Heading1Char" /></w:rPr></w:r>
   let root = read_xml_string(xml, namespace_map=office_namespace_map())
-  match empty_body_reader({ relationships: [] }).read_element(root)[0] {
+  match empty_body_reader({ relationships: [], }).read_element(root)[0] {
     Run(children~, ..) => debug_inspect(children, content="[]")
     _ => fail("expected run")
   }
@@ -1243,7 +1243,7 @@ test "docx hyperlink reader follows Mammoth target forms" {
     internal_xml,
     namespace_map=office_namespace_map(),
   )
-  match empty_body_reader({ relationships: [] }).read_element(internal)[0] {
+  match empty_body_reader({ relationships: [], }).read_element(internal)[0] {
     Hyperlink(href~, anchor~, target_frame~, children~) => {
       debug_inspect(href, content="None")
       debug_inspect(anchor, content="Some(\"_Peter\")")
@@ -1261,7 +1261,8 @@ test "docx hyperlink reader follows Mammoth target forms" {
     target_frame_xml,
     namespace_map=office_namespace_map(),
   )
-  match empty_body_reader({ relationships: [] }).read_element(target_frame)[0] {
+  match
+    empty_body_reader({ relationships: [], }).read_element(target_frame)[0] {
     Hyperlink(target_frame~, ..) =>
       debug_inspect(target_frame, content="Some(\"_blank\")")
     _ => fail("expected hyperlink")
@@ -1273,7 +1274,7 @@ test "docx hyperlink reader follows Mammoth target forms" {
     namespace_map=office_namespace_map(),
   )
   match
-    empty_body_reader({ relationships: [] }).read_element(empty_target_frame)[0] {
+    empty_body_reader({ relationships: [], }).read_element(empty_target_frame)[0] {
     Hyperlink(target_frame~, ..) => debug_inspect(target_frame, content="None")
     _ => fail("expected hyperlink")
   }
@@ -1284,7 +1285,9 @@ test "docx hyperlink reader follows Mammoth target forms" {
     namespace_map=office_namespace_map(),
   )
   match
-    empty_body_reader({ relationships: [] }).read_element(empty_relationship_id)[0] {
+    empty_body_reader({ relationships: [], }).read_element(
+      empty_relationship_id,
+    )[0] {
     Hyperlink(href~, anchor~, target_frame~, children~) => {
       debug_inspect(href, content="None")
       debug_inspect(anchor, content="Some(\"Introduction\")")
@@ -1302,7 +1305,8 @@ test "docx hyperlink reader follows Mammoth target forms" {
     empty_anchor_xml,
     namespace_map=office_namespace_map(),
   )
-  match empty_body_reader({ relationships: [] }).read_element(empty_anchor)[0] {
+  match
+    empty_body_reader({ relationships: [], }).read_element(empty_anchor)[0] {
     Run(..) => ()
     _ => fail("expected transparent hyperlink children")
   }
@@ -1313,7 +1317,7 @@ test "docx hyperlink reader preserves children when no target is present" {
   let xml =
     #|<w:hyperlink xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:r><w:t>Hello</w:t></w:r></w:hyperlink>
   let root = read_xml_string(xml, namespace_map=office_namespace_map())
-  let elements = empty_body_reader({ relationships: [] }).read_element(root)
+  let elements = empty_body_reader({ relationships: [], }).read_element(root)
   match elements[0] {
     Run(..) => ()
     _ => fail("expected hyperlink children")
@@ -1325,7 +1329,7 @@ test "docx hyperlink reader preserves children when relationship target is missi
   let xml =
     #|<w:hyperlink xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="missing"><w:r><w:t>Hello</w:t></w:r></w:hyperlink>
   let root = read_xml_string(xml, namespace_map=office_namespace_map())
-  let reader = empty_body_reader({ relationships: [] })
+  let reader = empty_body_reader({ relationships: [], })
   match reader.read_element(root)[0] {
     Hyperlink(children~, href=None, anchor=None, target_frame=None) =>
       inspect(
@@ -1342,7 +1346,7 @@ test "docx structured document tag checkbox without content is read" {
   let xml =
     #|<w:sdt xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:wordml="http://schemas.microsoft.com/office/word/2010/wordml"><w:sdtPr><wordml:checkbox /></w:sdtPr></w:sdt>
   let root = read_xml_string(xml, namespace_map=office_namespace_map())
-  let elements = empty_body_reader({ relationships: [] }).read_element(root)
+  let elements = empty_body_reader({ relationships: [], }).read_element(root)
   debug_inspect(elements, content="[Checkbox(false)]")
   let unchecked_xml =
     #|<w:sdt xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:wordml="http://schemas.microsoft.com/office/word/2010/wordml"><w:sdtPr><wordml:checkbox><wordml:checked wordml:val="0" /></wordml:checkbox></w:sdtPr></w:sdt>
@@ -1351,7 +1355,7 @@ test "docx structured document tag checkbox without content is read" {
     namespace_map=office_namespace_map(),
   )
   debug_inspect(
-    empty_body_reader({ relationships: [] }).read_element(unchecked),
+    empty_body_reader({ relationships: [], }).read_element(unchecked),
     content="[Checkbox(false)]",
   )
   let checked_xml =
@@ -1361,7 +1365,7 @@ test "docx structured document tag checkbox without content is read" {
     namespace_map=office_namespace_map(),
   )
   debug_inspect(
-    empty_body_reader({ relationships: [] }).read_element(checked),
+    empty_body_reader({ relationships: [], }).read_element(checked),
     content="[Checkbox(true)]",
   )
 }
@@ -1371,7 +1375,7 @@ test "docx structured document tag checkbox replaces content character" {
   let xml =
     #|<w:tbl xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:wordml="http://schemas.microsoft.com/office/word/2010/wordml"><w:tr><w:sdt><w:sdtPr><wordml:checkbox><wordml:checked wordml:val="1" /></wordml:checkbox></w:sdtPr><w:sdtContent><w:tc><w:p><w:r><w:t>\u{2610}</w:t></w:r></w:p></w:tc></w:sdtContent></w:sdt></w:tr></w:tbl>
   let root = read_xml_string(xml, namespace_map=office_namespace_map())
-  let elements = empty_body_reader({ relationships: [] }).read_element(root)
+  let elements = empty_body_reader({ relationships: [], }).read_element(root)
   inspect(
     convert_document_to_html(document(elements)).value,
     content="<table><tr><td><p><input type=\"checkbox\" checked=\"checked\" /></p></td></tr></table>",
@@ -1383,7 +1387,7 @@ test "docx structured document tag checkbox keeps trailing content" {
   let xml =
     #|<w:sdt xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:wordml="http://schemas.microsoft.com/office/word/2010/wordml"><w:sdtPr><wordml:checkbox><wordml:checked wordml:val="1" /></wordml:checkbox></w:sdtPr><w:sdtContent><w:p><w:r><w:t>\u{2610}</w:t></w:r></w:p><w:p><w:r><w:t>After</w:t></w:r></w:p></w:sdtContent></w:sdt>
   let root = read_xml_string(xml, namespace_map=office_namespace_map())
-  let elements = empty_body_reader({ relationships: [] }).read_element(root)
+  let elements = empty_body_reader({ relationships: [], }).read_element(root)
   inspect(
     convert_document_to_html(document(elements)).value,
     content="<p><input type=\"checkbox\" checked=\"checked\" /></p><p>After</p>",
@@ -1395,7 +1399,7 @@ test "docx structured document tag checkbox falls back for empty text" {
   let xml =
     #|<w:sdt xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:wordml="http://schemas.microsoft.com/office/word/2010/wordml"><w:sdtPr><wordml:checkbox /></w:sdtPr><w:sdtContent><w:p><w:r><w:t></w:t></w:r></w:p></w:sdtContent></w:sdt>
   let root = read_xml_string(xml, namespace_map=office_namespace_map())
-  let elements = empty_body_reader({ relationships: [] }).read_element(root)
+  let elements = empty_body_reader({ relationships: [], }).read_element(root)
   inspect(
     convert_document_to_html(document(elements)).value,
     content="<input type=\"checkbox\" />",
@@ -1407,7 +1411,7 @@ test "docx structured document tag checkbox ignores deleted content" {
   let xml =
     #|<w:tbl xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:wordml="http://schemas.microsoft.com/office/word/2010/wordml"><w:tr><w:sdt><w:sdtPr><wordml:checkbox><wordml:checked wordml:val="1" /></wordml:checkbox></w:sdtPr><w:sdtContent><w:tc><w:p><w:r><w:t>\u{2610}</w:t></w:r><w:del><w:r><w:t>\u{2610}</w:t></w:r></w:del></w:p></w:tc></w:sdtContent></w:sdt></w:tr></w:tbl>
   let root = read_xml_string(xml, namespace_map=office_namespace_map())
-  let elements = empty_body_reader({ relationships: [] }).read_element(root)
+  let elements = empty_body_reader({ relationships: [], }).read_element(root)
   inspect(
     convert_document_to_html(document(elements)).value,
     content="<table><tr><td><p><input type=\"checkbox\" checked=\"checked\" /></p></td></tr></table>",
@@ -1427,9 +1431,9 @@ test "docx table properties include table style name" {
         name: "Normal Table",
       },
     },
-    zip: { entries: {} },
-    relationships: { relationships: [] },
-    content_types: { defaults: {}, overrides: {} },
+    zip: { entries: {}, },
+    relationships: { relationships: [], },
+    content_types: { defaults: {}, overrides: {}, },
     base_path: "word",
     numbering: NumberingMap::empty(),
     messages: [],
@@ -1454,7 +1458,7 @@ test "docx table style warnings match Mammoth" {
   let xml =
     #|<w:tbl xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:tblPr><w:tblStyle w:val="TableNormal" /></w:tblPr></w:tbl>
   let root = read_xml_string(xml, namespace_map=office_namespace_map())
-  let reader = empty_body_reader({ relationships: [] })
+  let reader = empty_body_reader({ relationships: [], })
   match reader.read_element(root)[0] {
     Table(properties~, ..) => {
       debug_inspect(properties.style_id, content="Some(\"TableNormal\")")
@@ -1492,7 +1496,7 @@ test "docx styles are keyed by type and keep first duplicate" {
     Some(_) => fail("expected table style not to match paragraph lookup")
   }
   let legacy_wrong_type : Map[String, StyleInfo] = {
-    "Shared": { style_id: "Shared", style_type: "table", name: "Shared Table" },
+    "Shared": { style_id: "Shared", style_type: "table", name: "Shared Table", },
   }
   match legacy_wrong_type.find_style("paragraph", "Shared") {
     None => ()
@@ -1626,7 +1630,7 @@ test "docx body reader records Mammoth-compatible warnings" {
     paragraph_xml,
     namespace_map=office_namespace_map(),
   )
-  let paragraph_reader = empty_body_reader({ relationships: [] })
+  let paragraph_reader = empty_body_reader({ relationships: [], })
   let paragraph_elements = paragraph_reader.read_element(paragraph)
   match paragraph_elements[0] {
     Paragraph(properties~, ..) => {
@@ -1644,7 +1648,7 @@ test "docx body reader records Mammoth-compatible warnings" {
   let run_xml =
     #|<w:r xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:rPr><w:rStyle w:val="Heading1Char" /></w:rPr></w:r>
   let run = read_xml_string(run_xml, namespace_map=office_namespace_map())
-  let run_reader = empty_body_reader({ relationships: [] })
+  let run_reader = empty_body_reader({ relationships: [], })
   match run_reader.read_element(run)[0] {
     Run(properties~, ..) => {
       debug_inspect(properties.style_id, content="Some(\"Heading1Char\")")
@@ -1664,7 +1668,7 @@ test "docx body reader records Mammoth-compatible warnings" {
     break_xml,
     namespace_map=office_namespace_map(),
   )
-  let break_reader = empty_body_reader({ relationships: [] })
+  let break_reader = empty_body_reader({ relationships: [], })
   debug_inspect(break_reader.read_element(break_element), content="[]")
   debug_inspect(
     break_reader.messages,
@@ -1678,7 +1682,7 @@ test "docx body reader records Mammoth-compatible warnings" {
     unknown_xml,
     namespace_map=office_namespace_map(),
   )
-  let unknown_reader = empty_body_reader({ relationships: [] })
+  let unknown_reader = empty_body_reader({ relationships: [], })
   debug_inspect(unknown_reader.read_element(unknown), content="[]")
   debug_inspect(
     unknown_reader.messages,
@@ -1692,7 +1696,7 @@ test "docx body reader records Mammoth-compatible warnings" {
     office_word_wrap_xml,
     namespace_map=office_namespace_map(),
   )
-  let office_word_reader = empty_body_reader({ relationships: [] })
+  let office_word_reader = empty_body_reader({ relationships: [], })
   debug_inspect(office_word_reader.read_element(office_word_wrap), content="[]")
   debug_inspect(office_word_reader.messages, content="[]")
 }
@@ -1703,8 +1707,8 @@ test "docx note and comment reader warnings are preserved" {
     #|<w:footnotes xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:footnote w:id="1"><w:not-an-element /></w:footnote></w:footnotes>
   let styles : Map[String, StyleInfo] = {}
   let numbering = NumberingMap::empty()
-  let content_types = ContentTypes::{ defaults: {}, overrides: {} }
-  let document_relationships = Relationships::{ relationships: [] }
+  let content_types = ContentTypes::{ defaults: {}, overrides: {}, }
+  let document_relationships = Relationships::{ relationships: [], }
   let base_path = "word"
   let footnotes = read_note_part(
     zip_with_text("word/footnotes.xml", footnotes_xml),
@@ -1758,7 +1762,7 @@ test "docx related parts fall back when relationship target is missing" {
     #|<w:footnotes xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:footnote w:id="1"><w:p /></w:footnote></w:footnotes>
   let styles : Map[String, StyleInfo] = {}
   let numbering = NumberingMap::empty()
-  let content_types = ContentTypes::{ defaults: {}, overrides: {} }
+  let content_types = ContentTypes::{ defaults: {}, overrides: {}, }
   let document_relationships = Relationships::{
     relationships: [
       {
@@ -1794,9 +1798,9 @@ test "docx document xml reader rejects missing body" {
       root,
       {},
       NumberingMap::empty(),
-      { entries: {} },
-      { relationships: [] },
-      { defaults: {}, overrides: {} },
+      { entries: {}, },
+      { relationships: [], },
+      { defaults: {}, overrides: {}, },
       "word",
       [],
       [],
@@ -1817,7 +1821,7 @@ test "docx document xml reader rejects missing body" {
 test "docx reader messages are deduplicated when prepended" {
   debug_inspect(
     prepend_messages(
-      { value: "", messages: [Warning("same"), Warning("converted")] },
+      { value: "", messages: [Warning("same"), Warning("converted")], },
       [Warning("same"), Warning("read")],
     ).messages,
     content=(
@@ -2059,7 +2063,7 @@ test "docx numbering xml follows numbering style links" {
       #|  <w:num w:numId="201"><w:abstractNumId w:val="101" /></w:num>
       #|</w:numbering>
     ),
-    { "List1": { style_id: "List1", style_type: "numbering", name: "200" } },
+    { "List1": { style_id: "List1", style_type: "numbering", name: "200", } },
   )
   match numbering.find_level("201", "0") {
     Some(level) => {
@@ -2075,7 +2079,7 @@ test "docx numbering xml follows numbering style links" {
       #|  <w:num w:numId="201"><w:abstractNumId w:val="101" /></w:num>
       #|</w:numbering>
     ),
-    { "List1": { style_id: "List1", style_type: "numbering", name: "" } },
+    { "List1": { style_id: "List1", style_type: "numbering", name: "", } },
   )
   debug_inspect(missing_num_id_style.find_level("201", "0"), content="None")
 }
@@ -2204,7 +2208,7 @@ test "docx table vertical merges become row spans" {
   let xml =
     #|<w:tbl xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:tr><w:tc><w:p /></w:tc></w:tr><w:tr><w:tc><w:tcPr><w:vMerge w:val="restart" /></w:tcPr><w:p /></w:tc></w:tr><w:tr><w:tc><w:tcPr><w:vMerge w:val="continue" /></w:tcPr><w:p /></w:tc></w:tr><w:tr><w:tc><w:tcPr><w:vMerge /></w:tcPr><w:p /></w:tc></w:tr><w:tr><w:tc><w:p /></w:tc></w:tr></w:tbl>
   let root = read_xml_string(xml, namespace_map=office_namespace_map())
-  let elements = empty_body_reader({ relationships: [] }).read_element(root)
+  let elements = empty_body_reader({ relationships: [], }).read_element(root)
   inspect(
     convert_document_to_html(document(elements)).value,
     content="<table><tr><td></td></tr><tr><td rowspan=\"3\"></td></tr><tr></tr><tr></tr><tr><td></td></tr></table>",
@@ -2216,7 +2220,7 @@ test "docx table vertical merges account for column spans" {
   let xml =
     #|<w:tbl xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:tr><w:tc><w:p /></w:tc><w:tc><w:p /></w:tc><w:tc><w:tcPr><w:vMerge w:val="restart" /></w:tcPr><w:p /></w:tc></w:tr><w:tr><w:tc><w:tcPr><w:gridSpan w:val="2" /></w:tcPr><w:p /></w:tc><w:tc><w:tcPr><w:vMerge w:val="continue" /></w:tcPr><w:p /></w:tc></w:tr><w:tr><w:tc><w:p /></w:tc><w:tc><w:p /></w:tc><w:tc><w:tcPr><w:vMerge w:val="continue" /></w:tcPr><w:p /></w:tc></w:tr><w:tr><w:tc><w:p /></w:tc><w:tc><w:p /></w:tc><w:tc><w:p /></w:tc></w:tr></w:tbl>
   let root = read_xml_string(xml, namespace_map=office_namespace_map())
-  let elements = empty_body_reader({ relationships: [] }).read_element(root)
+  let elements = empty_body_reader({ relationships: [], }).read_element(root)
   inspect(
     convert_document_to_html(document(elements)).value,
     content="<table><tr><td></td><td></td><td rowspan=\"3\"></td></tr><tr><td colspan=\"2\"></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td><td></td></tr></table>",
@@ -2228,7 +2232,7 @@ test "docx table vertical merges do not cross misaligned cells" {
   let xml =
     #|<w:tbl xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:tr><w:tc><w:tcPr><w:gridSpan w:val="2" /><w:vMerge w:val="restart" /></w:tcPr><w:p /></w:tc></w:tr><w:tr><w:tc><w:p /></w:tc><w:tc><w:tcPr><w:vMerge w:val="continue" /></w:tcPr><w:p /></w:tc></w:tr></w:tbl>
   let root = read_xml_string(xml, namespace_map=office_namespace_map())
-  let elements = empty_body_reader({ relationships: [] }).read_element(root)
+  let elements = empty_body_reader({ relationships: [], }).read_element(root)
   inspect(
     convert_document_to_html(document(elements)).value,
     content="<table><tr><td colspan=\"2\"></td></tr><tr><td></td><td></td></tr></table>",
@@ -2240,7 +2244,7 @@ test "docx table row header property marks leading header rows" {
   let xml =
     #|<w:tbl xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:tr><w:trPr><w:tblHeader /></w:trPr></w:tr><w:tr /></w:tbl>
   let root = read_xml_string(xml, namespace_map=office_namespace_map())
-  let elements = empty_body_reader({ relationships: [] }).read_element(root)
+  let elements = empty_body_reader({ relationships: [], }).read_element(root)
   inspect(
     convert_document_to_html(document(elements)).value,
     content="<table><thead><tr></tr></thead><tbody><tr></tr></tbody></table>",
@@ -2255,7 +2259,7 @@ test "docx table reader warns when row span calculation is unreliable" {
     non_row_xml,
     namespace_map=office_namespace_map(),
   )
-  let non_row_reader = empty_body_reader({ relationships: [] })
+  let non_row_reader = empty_body_reader({ relationships: [], })
   inspect(
     convert_document_to_html(document(non_row_reader.read_element(non_row))).value,
     content="<table><tr><td></td></tr><p>Between</p><tr><td></td></tr></table>",
@@ -2272,7 +2276,7 @@ test "docx table reader warns when row span calculation is unreliable" {
     non_cell_xml,
     namespace_map=office_namespace_map(),
   )
-  let non_cell_reader = empty_body_reader({ relationships: [] })
+  let non_cell_reader = empty_body_reader({ relationships: [], })
   inspect(
     convert_document_to_html(document(non_cell_reader.read_element(non_cell))).value,
     content="<table><tr><td></td><p>Between</p><td></td></tr></table>",
@@ -2290,7 +2294,7 @@ test "docx table deleted rows are ignored" {
   let xml =
     #|<w:tbl xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:tr><w:trPr><w:del /></w:trPr><w:tc><w:p><w:r><w:t>Deleted</w:t></w:r></w:p></w:tc></w:tr><w:tr><w:tc><w:p><w:r><w:t>Kept</w:t></w:r></w:p></w:tc></w:tr></w:tbl>
   let root = read_xml_string(xml, namespace_map=office_namespace_map())
-  let elements = empty_body_reader({ relationships: [] }).read_element(root)
+  let elements = empty_body_reader({ relationships: [], }).read_element(root)
   inspect(
     convert_document_to_html(document(elements)).value,
     content="<table><tr><td><p>Kept</p></td></tr></table>",
@@ -2313,7 +2317,7 @@ test "docx table grid spans follow Mammoth parseInt behavior" {
       value +
       "\" /></w:tcPr><w:p /></w:tc>"
     let root = read_xml_string(xml, namespace_map=office_namespace_map())
-    match empty_body_reader({ relationships: [] }).read_element(root)[0] {
+    match empty_body_reader({ relationships: [], }).read_element(root)[0] {
       TableCell(col_span~, row_span~, ..) => {
         inspect(col_span, content=expected.to_string())
         inspect(row_span, content="1")
@@ -2329,7 +2333,7 @@ test "docx deleted paragraph read directly is ignored" {
     #|<w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:pPr><w:rPr><w:del /></w:rPr></w:pPr><w:r><w:t>Deleted</w:t></w:r></w:p>
   let root = read_xml_string(xml, namespace_map=office_namespace_map())
   debug_inspect(
-    empty_body_reader({ relationships: [] }).read_element(root),
+    empty_body_reader({ relationships: [], }).read_element(root),
     content="[]",
   )
 }
@@ -2339,7 +2343,7 @@ test "docx deleted paragraph content is prepended to next paragraph" {
   let xml =
     #|<w:body xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:p><w:pPr><w:rPr><w:del /></w:rPr></w:pPr><w:r><w:t>One</w:t></w:r></w:p><w:p><w:r><w:t>Two</w:t></w:r></w:p><w:p><w:r><w:t>Three</w:t></w:r></w:p></w:body>
   let root = read_xml_string(xml, namespace_map=office_namespace_map())
-  let elements = empty_body_reader({ relationships: [] }).read_children(
+  let elements = empty_body_reader({ relationships: [], }).read_children(
     root.children,
   )
   inspect(
@@ -2354,7 +2358,7 @@ fn complex_field_paragraph_html(instruction : String) -> String raise DocxError 
     instruction +
     "</w:instrText><w:r><w:fldChar w:fldCharType=\"separate\" /></w:r><w:r><w:t>Hello</w:t></w:r><w:r><w:fldChar w:fldCharType=\"end\" /></w:r></w:p>"
   let root = read_xml_string(xml, namespace_map=office_namespace_map())
-  let elements = empty_body_reader({ relationships: [] }).read_element(root)
+  let elements = empty_body_reader({ relationships: [], }).read_element(root)
   convert_document_to_html(document(elements)).value
 }
 
@@ -2382,7 +2386,7 @@ test "docx complex field marker elements do not warn" {
       "<w:r xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\"><w:instrText> HYPERLINK \"http://example.com\"</w:instrText></w:r>",
     ] {
     let element = read_xml_string(xml, namespace_map=office_namespace_map())
-    let reader = empty_body_reader({ relationships: [] })
+    let reader = empty_body_reader({ relationships: [], })
     ignore(reader.read_element(element))
     debug_inspect(reader.messages, content="[]")
   }
@@ -2524,7 +2528,7 @@ test "docx complex field hyperlink instructions can be split across runs" {
   let xml =
     #|<w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:r><w:fldChar w:fldCharType="begin" /></w:r><w:r><w:instrText> HYPE</w:instrText></w:r><w:r><w:instrText>RLINK "http://example.com"</w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate" /></w:r><w:r><w:t>Hello</w:t></w:r><w:r><w:fldChar w:fldCharType="end" /></w:r></w:p>
   let root = read_xml_string(xml, namespace_map=office_namespace_map())
-  let elements = empty_body_reader({ relationships: [] }).read_element(root)
+  let elements = empty_body_reader({ relationships: [], }).read_element(root)
   inspect(
     convert_document_to_html(document(elements)).value,
     content="<p><a href=\"http://example.com\">Hello</a></p>",
@@ -2564,7 +2568,7 @@ test "docx text boxes read alternate content fallback" {
   let xml =
     #|<w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"><mc:AlternateContent><mc:Choice Requires="wps"><w:txbxContent><w:p><w:r><w:t>Choice</w:t></w:r></w:p></w:txbxContent></mc:Choice><mc:Fallback><w:txbxContent><w:p><w:r><w:t>Fallback</w:t></w:r></w:p></w:txbxContent></mc:Fallback></mc:AlternateContent></w:p>
   let root = read_xml_string(xml, namespace_map=office_namespace_map())
-  let elements = empty_body_reader({ relationships: [] }).read_element(root)
+  let elements = empty_body_reader({ relationships: [], }).read_element(root)
   inspect(
     convert_document_to_html(document(elements)).value,
     content="<p>Fallback</p>",
@@ -2576,7 +2580,7 @@ test "docx text box helper handles alternate content root" {
   let xml =
     #|<mc:AlternateContent xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><mc:Choice Requires="wps"><w:txbxContent><w:p><w:r><w:t>Choice</w:t></w:r></w:p></w:txbxContent></mc:Choice><mc:Fallback><w:txbxContent><w:p><w:r><w:t>Fallback</w:t></w:r></w:p></w:txbxContent></mc:Fallback></mc:AlternateContent>
   let root = read_xml_string(xml, namespace_map=office_namespace_map())
-  let elements = empty_body_reader({ relationships: [] }).read_text_box_elements(
+  let elements = empty_body_reader({ relationships: [], }).read_text_box_elements(
     root,
   )
   inspect(
@@ -2594,7 +2598,7 @@ test "docx body reader handles unspliced alternate content nodes" {
   inspect(
     convert_document_to_html(
       document(
-        empty_body_reader({ relationships: [] }).read_element(direct_alternate),
+        empty_body_reader({ relationships: [], }).read_element(direct_alternate),
       ),
     ).value,
     content="Fallback",
@@ -2610,7 +2614,7 @@ test "docx body reader handles unspliced alternate content nodes" {
   inspect(
     convert_document_to_html(
       document(
-        empty_body_reader({ relationships: [] }).read_element(
+        empty_body_reader({ relationships: [], }).read_element(
           paragraph_alternate,
         ),
       ),
@@ -2644,7 +2648,7 @@ test "docx body reader handles unspliced alternate content nodes" {
   inspect(
     convert_document_to_html(
       document(
-        empty_body_reader({ relationships: [] }).read_element(pict_alternate),
+        empty_body_reader({ relationships: [], }).read_element(pict_alternate),
       ),
     ).value,
     content="<p>BeforeAfter</p><p>Fallback</p>",
@@ -2657,7 +2661,7 @@ test "docx body reader handles unspliced alternate content nodes" {
   inspect(
     convert_document_to_html(
       document(
-        empty_body_reader({ relationships: [] }).read_text_box_elements(
+        empty_body_reader({ relationships: [], }).read_text_box_elements(
           text_box_with_raw_text,
         ),
       ),
@@ -2717,7 +2721,7 @@ test "docx w:pict extra content uses alternate fallback" {
   let xml =
     #|<w:p xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"><w:r><w:t>Before</w:t></w:r><w:r><w:pict>ignored<mc:AlternateContent><mc:Choice Requires="wps"><v:shape><w:txbxContent><w:p><w:r><w:t>Choice</w:t></w:r></w:p></w:txbxContent></v:shape></mc:Choice><mc:Fallback><v:shape><w:txbxContent><w:p><w:r><w:t>Fallback</w:t></w:r></w:p></w:txbxContent></v:shape></mc:Fallback></mc:AlternateContent>ignored</w:pict></w:r><w:r><w:t>After</w:t></w:r></w:p>
   let root = read_xml_string(xml, namespace_map=office_namespace_map())
-  let elements = empty_body_reader({ relationships: [] }).read_element(root)
+  let elements = empty_body_reader({ relationships: [], }).read_element(root)
   inspect(
     convert_document_to_html(document(elements)).value,
     content="<p>BeforeAfter</p><p>Fallback</p>",
@@ -2744,7 +2748,7 @@ test "docx structured checkbox replacement recurses through containers" {
 fn complex_field_checkbox_html(
   checkbox_children : String,
   separate~ : Bool,
-  instruction_text? : String = " FORMCHECKBOX ",
+  instruction_text~ : String = " FORMCHECKBOX ",
 ) -> String raise DocxError {
   let separate_xml = if separate {
     "<w:r><w:fldChar w:fldCharType=\"separate\" /></w:r>"
@@ -2759,7 +2763,7 @@ fn complex_field_checkbox_html(
     separate_xml +
     "<w:r><w:fldChar w:fldCharType=\"end\" /></w:r></w:p>"
   let root = read_xml_string(xml, namespace_map=office_namespace_map())
-  let elements = empty_body_reader({ relationships: [] }).read_element(root)
+  let elements = empty_body_reader({ relationships: [], }).read_element(root)
   convert_document_to_html(document(elements)).value
 }
 
@@ -2859,7 +2863,7 @@ fn symbol_html(font : String, char : String) -> String raise DocxError {
     "\" />"
   let element = read_xml_string(xml, namespace_map=office_namespace_map())
   convert_document_to_html(
-    document(empty_body_reader({ relationships: [] }).read_element(element)),
+    document(empty_body_reader({ relationships: [], }).read_element(element)),
   ).value
 }
 
@@ -3000,7 +3004,7 @@ test "docx symbols warn when unsupported like Mammoth" {
   let xml =
     #|<w:sym xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" w:font="Dingwings" w:char="28" />
   let element = read_xml_string(xml, namespace_map=office_namespace_map())
-  let reader = empty_body_reader({ relationships: [] })
+  let reader = empty_body_reader({ relationships: [], })
   debug_inspect(reader.read_element(element), content="[]")
   debug_inspect(
     reader.messages,
@@ -3012,7 +3016,7 @@ test "docx symbols warn when unsupported like Mammoth" {
     "<w:sym xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\" w:font=\"Wingdings\" w:char=\"f028\" />",
     namespace_map=office_namespace_map(),
   )
-  let lowercase_reader = empty_body_reader({ relationships: [] })
+  let lowercase_reader = empty_body_reader({ relationships: [], })
   debug_inspect(
     lowercase_reader.read_element(lowercase_private_use),
     content="[]",
@@ -3027,7 +3031,7 @@ test "docx symbols warn when unsupported like Mammoth" {
     "<w:sym xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\" w:font=\"Wingdings\" w:char=\"zz\" />",
     namespace_map=office_namespace_map(),
   )
-  let invalid_hex_reader = empty_body_reader({ relationships: [] })
+  let invalid_hex_reader = empty_body_reader({ relationships: [], })
   debug_inspect(invalid_hex_reader.read_element(invalid_hex), content="[]")
   debug_inspect(
     invalid_hex_reader.messages,
@@ -3039,7 +3043,7 @@ test "docx symbols warn when unsupported like Mammoth" {
     "<w:sym xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\" w:font=\"Dingwings\" w:char=\"F0zz\" />",
     namespace_map=office_namespace_map(),
   )
-  let invalid_private_use_reader = empty_body_reader({ relationships: [] })
+  let invalid_private_use_reader = empty_body_reader({ relationships: [], })
   debug_inspect(
     invalid_private_use_reader.read_element(invalid_private_use),
     content="[]",
@@ -3054,7 +3058,7 @@ test "docx symbols warn when unsupported like Mammoth" {
     "<w:sym xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\" w:font=\"Wingdings\" />",
     namespace_map=office_namespace_map(),
   )
-  let missing_char_reader = empty_body_reader({ relationships: [] })
+  let missing_char_reader = empty_body_reader({ relationships: [], })
   debug_inspect(missing_char_reader.read_element(missing_char), content="[]")
   debug_inspect(
     missing_char_reader.messages,
@@ -3072,7 +3076,7 @@ fn read_vml_wrapper_html(tag : String) -> String raise DocxError {
     tag +
     ">"
   let root = read_xml_string(xml, namespace_map=office_namespace_map())
-  let elements = empty_body_reader({ relationships: [] }).read_element(root)
+  let elements = empty_body_reader({ relationships: [], }).read_element(root)
   convert_document_to_html(document(elements)).value
 }
 
@@ -3097,7 +3101,7 @@ test "docx transparent wrappers pass through children" {
 fn drawing_image_reader_with_images(read_images : Bool) -> BodyReader {
   {
     styles: {},
-    zip: { entries: { "word/media/tiny.png": b"abc" } },
+    zip: { entries: { "word/media/tiny.png": b"abc" }, },
     relationships: {
       relationships: [
         {
@@ -3114,7 +3118,7 @@ fn drawing_image_reader_with_images(read_images : Bool) -> BodyReader {
         },
       ],
     },
-    content_types: { defaults: { "png": "image/png" }, overrides: {} },
+    content_types: { defaults: { "png": "image/png" }, overrides: {}, },
     base_path: "word",
     numbering: NumberingMap::empty(),
     messages: [],
@@ -3163,14 +3167,14 @@ test "docx drawing image reader ignores empty drawing containers" {
     "<w:drawing xmlns:w=\"http://schemas.openxmlformats.org/wordprocessingml/2006/main\" />",
     namespace_map=office_namespace_map(),
   )
-  let drawing_reader = empty_body_reader({ relationships: [] })
+  let drawing_reader = empty_body_reader({ relationships: [], })
   debug_inspect(drawing_reader.read_element(empty_drawing), content="[]")
   debug_inspect(drawing_reader.messages, content="[]")
   let empty_inline = read_xml_string(
     "<wp:inline xmlns:wp=\"http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing\" />",
     namespace_map=office_namespace_map(),
   )
-  let inline_reader = empty_body_reader({ relationships: [] })
+  let inline_reader = empty_body_reader({ relationships: [], })
   debug_inspect(inline_reader.read_element(empty_inline), content="[]")
   debug_inspect(inline_reader.messages, content="[]")
 }
@@ -3207,7 +3211,7 @@ test "docx linked DrawingML images use the external loader" {
   let root = read_xml_string(xml, namespace_map=office_namespace_map())
   let reader = BodyReader::{
     styles: {},
-    zip: { entries: {} },
+    zip: { entries: {}, },
     relationships: {
       relationships: [
         {
@@ -3218,7 +3222,7 @@ test "docx linked DrawingML images use the external loader" {
         },
       ],
     },
-    content_types: { defaults: {}, overrides: {} },
+    content_types: { defaults: {}, overrides: {}, },
     base_path: "word",
     numbering: NumberingMap::empty(),
     messages: [],
@@ -3245,7 +3249,7 @@ test "docx linked DrawingML image loader tries decoded file URI paths" {
   let root = read_xml_string(xml, namespace_map=office_namespace_map())
   let reader = BodyReader::{
     styles: {},
-    zip: { entries: {} },
+    zip: { entries: {}, },
     relationships: {
       relationships: [
         {
@@ -3256,7 +3260,7 @@ test "docx linked DrawingML image loader tries decoded file URI paths" {
         },
       ],
     },
-    content_types: { defaults: {}, overrides: {} },
+    content_types: { defaults: {}, overrides: {}, },
     base_path: "word",
     numbering: NumberingMap::empty(),
     messages: [],
@@ -3283,7 +3287,7 @@ test "docx embedded DrawingML images ignore relationship target mode" {
   let root = read_xml_string(xml, namespace_map=office_namespace_map())
   let reader = BodyReader::{
     styles: {},
-    zip: { entries: { "word/media/hat.png": b"abc" } },
+    zip: { entries: { "word/media/hat.png": b"abc" }, },
     relationships: {
       relationships: [
         {
@@ -3294,7 +3298,7 @@ test "docx embedded DrawingML images ignore relationship target mode" {
         },
       ],
     },
-    content_types: { defaults: { "png": "image/png" }, overrides: {} },
+    content_types: { defaults: { "png": "image/png" }, overrides: {}, },
     base_path: "word",
     numbering: NumberingMap::empty(),
     messages: [],
@@ -3318,7 +3322,7 @@ test "docx DrawingML image relationship ids follow Mammoth truthiness" {
   )
   let linked_reader = BodyReader::{
     styles: {},
-    zip: { entries: {} },
+    zip: { entries: {}, },
     relationships: {
       relationships: [
         {
@@ -3329,7 +3333,7 @@ test "docx DrawingML image relationship ids follow Mammoth truthiness" {
         },
       ],
     },
-    content_types: { defaults: {}, overrides: {} },
+    content_types: { defaults: {}, overrides: {}, },
     base_path: "word",
     numbering: NumberingMap::empty(),
     messages: [],
@@ -3355,7 +3359,7 @@ test "docx DrawingML image relationship ids follow Mammoth truthiness" {
   )
   let blank_link_reader = BodyReader::{
     styles: {},
-    zip: { entries: { "word/media/tiny.png": b"abc" } },
+    zip: { entries: { "word/media/tiny.png": b"abc" }, },
     relationships: {
       relationships: [
         {
@@ -3372,7 +3376,7 @@ test "docx DrawingML image relationship ids follow Mammoth truthiness" {
         },
       ],
     },
-    content_types: { defaults: { "png": "image/png" }, overrides: {} },
+    content_types: { defaults: { "png": "image/png" }, overrides: {}, },
     base_path: "word",
     numbering: NumberingMap::empty(),
     messages: [],
@@ -3508,7 +3512,7 @@ test "docx image reader records Mammoth-compatible warnings" {
     drawing_without_blip_id,
     namespace_map=office_namespace_map(),
   )
-  let missing_blip_reader = empty_body_reader({ relationships: [] })
+  let missing_blip_reader = empty_body_reader({ relationships: [], })
   debug_inspect(missing_blip_reader.read_element(missing_blip), content="[]")
   debug_inspect(
     missing_blip_reader.messages,
@@ -3522,7 +3526,7 @@ test "docx image reader records Mammoth-compatible warnings" {
     missing_relationship_xml,
     namespace_map=office_namespace_map(),
   )
-  let missing_relationship_reader = empty_body_reader({ relationships: [] })
+  let missing_relationship_reader = empty_body_reader({ relationships: [], })
   debug_inspect(
     missing_relationship_reader.read_element(missing_relationship),
     content="[]",
@@ -3541,7 +3545,7 @@ test "docx image reader records Mammoth-compatible warnings" {
   )
   let missing_entry_reader = BodyReader::{
     styles: {},
-    zip: { entries: {} },
+    zip: { entries: {}, },
     relationships: {
       relationships: [
         {
@@ -3552,7 +3556,7 @@ test "docx image reader records Mammoth-compatible warnings" {
         },
       ],
     },
-    content_types: { defaults: { "png": "image/png" }, overrides: {} },
+    content_types: { defaults: { "png": "image/png" }, overrides: {}, },
     base_path: "word",
     numbering: NumberingMap::empty(),
     messages: [],
@@ -3572,7 +3576,7 @@ test "docx image reader records Mammoth-compatible warnings" {
     vml_without_id,
     namespace_map=office_namespace_map(),
   )
-  let vml_reader = empty_body_reader({ relationships: [] })
+  let vml_reader = empty_body_reader({ relationships: [], })
   debug_inspect(vml_reader.read_element(vml), content="[]")
   debug_inspect(
     vml_reader.messages,
@@ -3586,7 +3590,7 @@ test "docx image reader records Mammoth-compatible warnings" {
     vml_with_empty_id,
     namespace_map=office_namespace_map(),
   )
-  let empty_vml_reader = empty_body_reader({ relationships: [] })
+  let empty_vml_reader = empty_body_reader({ relationships: [], })
   debug_inspect(empty_vml_reader.read_element(empty_vml), content="[]")
   debug_inspect(
     empty_vml_reader.messages,
@@ -3600,7 +3604,7 @@ test "docx image reader records Mammoth-compatible warnings" {
     vml_missing_relationship,
     namespace_map=office_namespace_map(),
   )
-  let missing_vml_reader = empty_body_reader({ relationships: [] })
+  let missing_vml_reader = empty_body_reader({ relationships: [], })
   debug_inspect(missing_vml_reader.read_element(missing_vml), content="[]")
   debug_inspect(missing_vml_reader.messages, content="[]")
   let missing_linked_relationship_xml =
@@ -3630,7 +3634,7 @@ test "docx image reader records Mammoth-compatible warnings" {
   )
   let external_reader = BodyReader::{
     styles: {},
-    zip: { entries: {} },
+    zip: { entries: {}, },
     relationships: {
       relationships: [
         {
@@ -3641,7 +3645,7 @@ test "docx image reader records Mammoth-compatible warnings" {
         },
       ],
     },
-    content_types: { defaults: {}, overrides: {} },
+    content_types: { defaults: {}, overrides: {}, },
     base_path: "word",
     numbering: NumberingMap::empty(),
     messages: [],
@@ -3663,7 +3667,7 @@ test "docx image reader records Mammoth-compatible warnings" {
   )
   let unsupported_reader = BodyReader::{
     styles: {},
-    zip: { entries: { "word/media/hat.emf": b"abc" } },
+    zip: { entries: { "word/media/hat.emf": b"abc" }, },
     relationships: {
       relationships: [
         {
@@ -3674,7 +3678,7 @@ test "docx image reader records Mammoth-compatible warnings" {
         },
       ],
     },
-    content_types: { defaults: { "emf": "image/x-emf" }, overrides: {} },
+    content_types: { defaults: { "emf": "image/x-emf" }, overrides: {}, },
     base_path: "word",
     numbering: NumberingMap::empty(),
     messages: [],

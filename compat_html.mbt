@@ -12,10 +12,10 @@ pub fn html_text(value : String) -> HtmlNode {
 /// Builds an HTML element node.
 pub fn html_element(
   tag : String,
-  attributes? : Map[String, String] = {},
-  children? : Array[HtmlNode] = [],
-  fresh? : Bool = false,
-  separator? : String = "",
+  attributes~ : Map[String, String] = {},
+  children~ : Array[HtmlNode] = [],
+  fresh~ : Bool = false,
+  separator~ : String = "",
 ) -> HtmlNode {
   @html.html_element(tag, attributes~, children~, fresh~, separator~)
 }
@@ -24,9 +24,9 @@ pub fn html_element(
 /// Builds an HTML element with a fresh generated id.
 pub fn fresh_html_element(
   tag : String,
-  attributes? : Map[String, String] = {},
-  children? : Array[HtmlNode] = [],
-  separator? : String = "",
+  attributes~ : Map[String, String] = {},
+  children~ : Array[HtmlNode] = [],
+  separator~ : String = "",
 ) -> HtmlNode {
   @html.fresh_html_element(tag, attributes~, children~, separator~)
 }
@@ -35,7 +35,7 @@ pub fn fresh_html_element(
 /// Serializes HTML nodes to a string.
 pub fn write_html(
   nodes : Array[HtmlNode],
-  pretty_print? : Bool = false,
+  pretty_print~ : Bool = false,
 ) -> String {
   @html.write_html(nodes, pretty_print~)
 }
