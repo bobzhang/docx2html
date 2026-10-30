@@ -36,7 +36,10 @@ pub(all) enum DocumentMatcher {
   BreakMatcher(@document.BreakType)
   CommentReferenceMatcher
 } derive(Eq, @debug.Debug)
+pub fn DocumentMatcher::equal(Self, Self) -> Bool
 pub fn DocumentMatcher::matches(Self, @document.DocumentElement) -> Bool
+pub fn DocumentMatcher::not_equal(Self, Self) -> Bool
+pub fn DocumentMatcher::to_repr(Self) -> @debug.Repr
 
 pub(all) struct HtmlPathElement {
   tag : String
@@ -44,21 +47,33 @@ pub(all) struct HtmlPathElement {
   fresh : Bool
   separator : String?
 } derive(Eq, @debug.Debug)
+pub fn HtmlPathElement::equal(Self, Self) -> Bool
+pub fn HtmlPathElement::not_equal(Self, Self) -> Bool
+pub fn HtmlPathElement::to_repr(Self) -> @debug.Repr
 
 pub(all) struct StyleMapParseResult {
   mappings : Array[StyleMapping]
   messages : Array[@core.Message]
 } derive(Eq, @debug.Debug)
+pub fn StyleMapParseResult::equal(Self, Self) -> Bool
+pub fn StyleMapParseResult::not_equal(Self, Self) -> Bool
+pub fn StyleMapParseResult::to_repr(Self) -> @debug.Repr
 
 pub(all) struct StyleMapping {
   from : DocumentMatcher
   to : Array[HtmlPathElement]
 } derive(Eq, @debug.Debug)
+pub fn StyleMapping::equal(Self, Self) -> Bool
+pub fn StyleMapping::not_equal(Self, Self) -> Bool
+pub fn StyleMapping::to_repr(Self) -> @debug.Repr
 
 pub(all) enum StyleNameMatcher {
   ExactStyleName(String)
   PrefixStyleName(String)
 } derive(Eq, @debug.Debug)
+pub fn StyleNameMatcher::equal(Self, Self) -> Bool
+pub fn StyleNameMatcher::not_equal(Self, Self) -> Bool
+pub fn StyleNameMatcher::to_repr(Self) -> @debug.Repr
 
 // Type aliases
 

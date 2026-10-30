@@ -7,11 +7,10 @@ import {
   "bobzhang/docx2html/style_map",
   "bobzhang/docx2html/xml",
   "bobzhang/docx2html/zip",
-  "moonbitlang/core/encoding/base64",
-  "moonbitlang/core/encoding/utf8",
-  "moonbitlang/core/string",
 }
 
 import {
   "hustcer/fzip",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/core/encoding/base64",
 } for "test"

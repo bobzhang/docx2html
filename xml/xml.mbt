@@ -144,7 +144,7 @@ priv struct XmlWriter {
 
 ///|
 fn invert_map(map : Map[String, String]) -> Map[String, String] {
-  let inverse : Map[String, String] = {}
+  let inverse : Map[String, String] = Map([])
   for item in map {
     let (key, value) = item
     inverse[value] = key
@@ -399,7 +399,7 @@ fn XmlParser::build_element(
   raw_attributes : Array[(String, String)],
   children : Array[XmlNode],
 ) -> XmlElement {
-  let attributes : Map[String, String] = {}
+  let attributes : Map[String, String] = Map([])
   for item in raw_attributes {
     let (name, value) = item
     attributes[self.map_name(name, is_attribute=true)] = decode_xml_entities(
@@ -747,3 +747,15 @@ fn escape_xml_attribute(value : String) -> String {
   }
   builder.to_string()
 }
+
+///|
+pub extend XmlElement with Debug::{to_repr}
+
+///|
+pub extend XmlElement with Eq::{not_equal, equal}
+
+///|
+pub extend XmlNode with Debug::{to_repr}
+
+///|
+pub extend XmlNode with Eq::{not_equal, equal}

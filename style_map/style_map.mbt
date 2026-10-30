@@ -632,7 +632,7 @@ fn parse_style_html_path_element(
 ) -> ParsedHtmlPathElement {
   let (tag, first_index) = parse_style_tag_choices_after_start(line, index, end)
   let mut index = first_index
-  let attributes : Map[String, String] = {}
+  let attributes : Map[String, String] = Map([])
   while index < end {
     if line[index] == '.' {
       let (class_name, next, error) = parse_style_identifier(
@@ -1127,3 +1127,33 @@ pub fn default_style_map_lines() -> Array[String] {
     "p[style-name='Body'] => p:fresh",
   ]
 }
+
+///|
+pub extend DocumentMatcher with Debug::{to_repr}
+
+///|
+pub extend DocumentMatcher with Eq::{not_equal, equal}
+
+///|
+pub extend HtmlPathElement with Debug::{to_repr}
+
+///|
+pub extend HtmlPathElement with Eq::{not_equal, equal}
+
+///|
+pub extend StyleMapParseResult with Debug::{to_repr}
+
+///|
+pub extend StyleMapParseResult with Eq::{not_equal, equal}
+
+///|
+pub extend StyleMapping with Debug::{to_repr}
+
+///|
+pub extend StyleMapping with Eq::{not_equal, equal}
+
+///|
+pub extend StyleNameMatcher with Debug::{to_repr}
+
+///|
+pub extend StyleNameMatcher with Eq::{not_equal, equal}

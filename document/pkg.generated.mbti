@@ -77,6 +77,9 @@ pub(all) enum BreakType {
   Page
   Column
 } derive(Eq, @debug.Debug)
+pub fn BreakType::equal(Self, Self) -> Bool
+pub fn BreakType::not_equal(Self, Self) -> Bool
+pub fn BreakType::to_repr(Self) -> @debug.Repr
 
 pub(all) struct Comment {
   comment_id : String
@@ -84,6 +87,9 @@ pub(all) struct Comment {
   author_name : String
   author_initials : String
 } derive(Eq, @debug.Debug)
+pub fn Comment::equal(Self, Self) -> Bool
+pub fn Comment::not_equal(Self, Self) -> Bool
+pub fn Comment::to_repr(Self) -> @debug.Repr
 
 pub(all) enum DocumentElement {
   Document(children~ : Array[DocumentElement], notes~ : Array[Note], comments~ : Array[Comment])
@@ -102,13 +108,19 @@ pub(all) enum DocumentElement {
   Break(BreakType)
   BookmarkStart(String)
 } derive(Eq, @debug.Debug)
+pub fn DocumentElement::equal(Self, Self) -> Bool
+pub fn DocumentElement::not_equal(Self, Self) -> Bool
 pub fn DocumentElement::to_raw_text(Self) -> String
+pub fn DocumentElement::to_repr(Self) -> @debug.Repr
 
 pub(all) struct Image {
   content_type : String
   alt_text : String?
   data : Bytes
 } derive(Eq, @debug.Debug)
+pub fn Image::equal(Self, Self) -> Bool
+pub fn Image::not_equal(Self, Self) -> Bool
+pub fn Image::to_repr(Self) -> @debug.Repr
 
 pub(all) struct Indent {
   start : String?
@@ -117,17 +129,26 @@ pub(all) struct Indent {
   hanging : String?
 } derive(Eq, @debug.Debug)
 pub fn Indent::default() -> Self
+pub fn Indent::equal(Self, Self) -> Bool
+pub fn Indent::not_equal(Self, Self) -> Bool
+pub fn Indent::to_repr(Self) -> @debug.Repr
 
 pub(all) struct Note {
   note_type : String
   note_id : String
   body : Array[DocumentElement]
 } derive(Eq, @debug.Debug)
+pub fn Note::equal(Self, Self) -> Bool
+pub fn Note::not_equal(Self, Self) -> Bool
+pub fn Note::to_repr(Self) -> @debug.Repr
 
 pub(all) struct Numbering {
   is_ordered : Bool
   level : Int32
 } derive(Eq, @debug.Debug)
+pub fn Numbering::equal(Self, Self) -> Bool
+pub fn Numbering::not_equal(Self, Self) -> Bool
+pub fn Numbering::to_repr(Self) -> @debug.Repr
 
 pub(all) struct ParagraphProperties {
   style_id : String?
@@ -137,6 +158,9 @@ pub(all) struct ParagraphProperties {
   indent : Indent
 } derive(Eq, @debug.Debug)
 pub fn ParagraphProperties::default() -> Self
+pub fn ParagraphProperties::equal(Self, Self) -> Bool
+pub fn ParagraphProperties::not_equal(Self, Self) -> Bool
+pub fn ParagraphProperties::to_repr(Self) -> @debug.Repr
 
 pub(all) struct RunProperties {
   style_id : String?
@@ -153,18 +177,27 @@ pub(all) struct RunProperties {
   highlight : String?
 } derive(Eq, @debug.Debug)
 pub fn RunProperties::default() -> Self
+pub fn RunProperties::equal(Self, Self) -> Bool
+pub fn RunProperties::not_equal(Self, Self) -> Bool
+pub fn RunProperties::to_repr(Self) -> @debug.Repr
 
 pub(all) struct TableProperties {
   style_id : String?
   style_name : String?
 } derive(Eq, @debug.Debug)
 pub fn TableProperties::default() -> Self
+pub fn TableProperties::equal(Self, Self) -> Bool
+pub fn TableProperties::not_equal(Self, Self) -> Bool
+pub fn TableProperties::to_repr(Self) -> @debug.Repr
 
 pub(all) enum VerticalAlignment {
   Baseline
   Superscript
   Subscript
 } derive(Eq, @debug.Debug)
+pub fn VerticalAlignment::equal(Self, Self) -> Bool
+pub fn VerticalAlignment::not_equal(Self, Self) -> Bool
+pub fn VerticalAlignment::to_repr(Self) -> @debug.Repr
 
 // Type aliases
 

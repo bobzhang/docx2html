@@ -12,7 +12,7 @@ pub fn open_zip(data : BytesView) -> ZipArchive raise DocxError {
     FzipError(message~, ..) =>
       raise InvalidZip(message="invalid ZIP archive: " + message)
   }
-  let map : Map[String, Bytes] = {}
+  let map : Map[String, Bytes] = Map([])
   for entry in entries {
     let (name, content) = entry
     map[name] = Bytes::from_array(content)
@@ -76,3 +76,9 @@ pub fn join_zip_path(parts : Array[String]) -> String {
   }
   relevant.join("/")
 }
+
+///|
+pub extend ZipArchive with Debug::{to_repr}
+
+///|
+pub extend ZipArchive with Eq::{not_equal, equal}

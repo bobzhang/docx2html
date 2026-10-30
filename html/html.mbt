@@ -345,3 +345,9 @@ pub fn escape_html_attribute(value : String) -> String {
   }
   builder.to_string()
 }
+
+///|
+pub extend HtmlNode with Debug::{to_repr}
+
+///|
+pub extend HtmlNode with Eq::{not_equal, equal}
