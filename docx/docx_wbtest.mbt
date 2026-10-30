@@ -114,7 +114,7 @@ fn numbering_from_xml(
 
 ///|
 fn zip_with_text(path : String, text : String) -> ZipArchive {
-  let entries : Map[String, Bytes] = {}
+  let entries : Map[String, Bytes] = Map([])
   entries[path] = @utf8.encode(text)
   { entries, }
 }
@@ -1705,7 +1705,7 @@ test "docx body reader records Mammoth-compatible warnings" {
 test "docx note and comment reader warnings are preserved" {
   let footnotes_xml =
     #|<w:footnotes xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:footnote w:id="1"><w:not-an-element /></w:footnote></w:footnotes>
-  let styles : Map[String, StyleInfo] = {}
+  let styles : Map[String, StyleInfo] = Map([])
   let numbering = NumberingMap::empty()
   let content_types = ContentTypes::{ defaults: {}, overrides: {}, }
   let document_relationships = Relationships::{ relationships: [], }
@@ -1760,7 +1760,7 @@ test "docx note and comment reader warnings are preserved" {
 test "docx related parts fall back when relationship target is missing" {
   let footnotes_xml =
     #|<w:footnotes xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:footnote w:id="1"><w:p /></w:footnote></w:footnotes>
-  let styles : Map[String, StyleInfo] = {}
+  let styles : Map[String, StyleInfo] = Map([])
   let numbering = NumberingMap::empty()
   let content_types = ContentTypes::{ defaults: {}, overrides: {}, }
   let document_relationships = Relationships::{

@@ -93,3 +93,21 @@ pub fn combine_results(results : Array[ConversionResult]) -> ConversionResult {
   }
   { value: value.to_string(), messages: dedupe_messages(messages), }
 }
+
+///|
+pub extend ConversionResult with Debug::{to_repr}
+
+///|
+pub extend ConversionResult with Eq::{not_equal, equal}
+
+///|
+pub extend DocxError with Debug::{to_repr}
+
+///|
+pub extend DocxError with Eq::{not_equal, equal}
+
+///|
+pub extend Message with Debug::{to_repr}
+
+///|
+pub extend Message with Eq::{not_equal, equal}

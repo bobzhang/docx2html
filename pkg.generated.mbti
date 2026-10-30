@@ -167,6 +167,9 @@ pub(all) suberror DocxError {
   MissingPart(message~ : String)
   Unsupported(message~ : String)
 } derive(Eq, @debug.Debug)
+pub fn DocxError::equal(Self, Self) -> Bool
+pub fn DocxError::not_equal(Self, Self) -> Bool
+pub fn DocxError::to_repr(Self) -> @debug.Repr
 
 // Types and methods
 

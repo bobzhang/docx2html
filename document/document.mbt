@@ -389,3 +389,69 @@ pub fn page_break() -> DocumentElement {
 pub fn column_break() -> DocumentElement {
   Break(Column)
 }
+
+///|
+pub extend BreakType with Debug::{to_repr}
+
+///|
+pub extend BreakType with Eq::{not_equal, equal}
+
+///|
+pub extend Comment with Debug::{to_repr}
+
+///|
+pub extend Comment with Eq::{not_equal, equal}
+
+///|
+pub extend DocumentElement with Debug::{to_repr}
+
+///|
+pub extend DocumentElement with Eq::{not_equal, equal}
+
+///|
+pub extend Image with Debug::{to_repr}
+
+///|
+pub extend Image with Eq::{not_equal, equal}
+
+///|
+pub extend Indent with Debug::{to_repr}
+
+///|
+pub extend Indent with Eq::{not_equal, equal}
+
+///|
+pub extend Note with Debug::{to_repr}
+
+///|
+pub extend Note with Eq::{not_equal, equal}
+
+///|
+pub extend Numbering with Debug::{to_repr}
+
+///|
+pub extend Numbering with Eq::{not_equal, equal}
+
+///|
+pub extend ParagraphProperties with Debug::{to_repr}
+
+///|
+pub extend ParagraphProperties with Eq::{not_equal, equal}
+
+///|
+pub extend RunProperties with Debug::{to_repr}
+
+///|
+pub extend RunProperties with Eq::{not_equal, equal}
+
+///|
+pub extend TableProperties with Debug::{to_repr}
+
+///|
+pub extend TableProperties with Eq::{not_equal, equal}
+
+///|
+pub extend VerticalAlignment with Debug::{to_repr}
+
+///|
+pub extend VerticalAlignment with Eq::{not_equal, equal}

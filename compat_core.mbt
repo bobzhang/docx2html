@@ -50,3 +50,9 @@ fn[T] bridge_core_error(
     Unsupported(message~) => raise Unsupported(message~)
   }
 }
+
+///|
+pub extend DocxError with Debug::{to_repr}
+
+///|
+pub extend DocxError with Eq::{not_equal, equal}

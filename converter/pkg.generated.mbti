@@ -32,11 +32,17 @@ pub(all) struct ImageConversion {
   nodes : Array[@html.HtmlNode]
   messages : Array[@core.Message]
 } derive(Eq, @debug.Debug)
+pub fn ImageConversion::equal(Self, Self) -> Bool
+pub fn ImageConversion::not_equal(Self, Self) -> Bool
+pub fn ImageConversion::to_repr(Self) -> @debug.Repr
 
 pub(all) enum OutputFormat {
   Html
   Markdown
 } derive(Eq, @debug.Debug)
+pub fn OutputFormat::equal(Self, Self) -> Bool
+pub fn OutputFormat::not_equal(Self, Self) -> Bool
+pub fn OutputFormat::to_repr(Self) -> @debug.Repr
 
 // Type aliases
 

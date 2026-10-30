@@ -208,7 +208,7 @@ fn DocumentConverter::convert_element(
       [html_element("input", attributes=attrs)]
     }
     Hyperlink(children~, href~, anchor~, target_frame~) => {
-      let attrs : Map[String, String] = {}
+      let attrs : Map[String, String] = Map([])
       match (href, anchor) {
         (Some(value), None) => attrs["href"] = value
         (Some(value), Some(anchor)) =>
@@ -571,7 +571,7 @@ fn DocumentConverter::convert_table_cell(
   row_span~ : Int32,
   as_header~ : Bool,
 ) -> HtmlNode {
-  let attrs : Map[String, String] = {}
+  let attrs : Map[String, String] = Map([])
   if col_span != 1 {
     attrs["colspan"] = col_span.to_string()
   }
@@ -629,7 +629,7 @@ pub fn img_element(
   read_attributes : (Image) -> Map[String, String],
 ) -> (Image) -> ImageConversion {
   fn(image) {
-    let attrs : Map[String, String] = {}
+    let attrs : Map[String, String] = Map([])
     match image.alt_text {
       Some(alt) => attrs["alt"] = alt
       None => ()
@@ -894,3 +894,15 @@ fn html_nodes_are_empty(nodes : Array[HtmlNode]) -> Bool {
   }
   true
 }
+
+///|
+pub extend ImageConversion with Debug::{to_repr}
+
+///|
+pub extend ImageConversion with Eq::{not_equal, equal}
+
+///|
+pub extend OutputFormat with Debug::{to_repr}
+
+///|
+pub extend OutputFormat with Eq::{not_equal, equal}

@@ -1,4 +1,3 @@
 import {
   "bobzhang/docx2html/core",
-  "moonbitlang/core/string",
 }

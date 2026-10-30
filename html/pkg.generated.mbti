@@ -34,6 +34,9 @@ pub(all) enum HtmlNode {
   TextNode(String)
   ForceWrite
 } derive(Eq, @debug.Debug)
+pub fn HtmlNode::equal(Self, Self) -> Bool
+pub fn HtmlNode::not_equal(Self, Self) -> Bool
+pub fn HtmlNode::to_repr(Self) -> @debug.Repr
 
 // Type aliases
 
