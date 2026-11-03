@@ -1,9 +1,10 @@
 ///|
 /// Diagnostic emitted while reading or converting a document.
+#derive(Debug, Eq)
 pub(all) enum Message {
   Warning(String)
   Error(String)
-} derive(Debug, Eq)
+}
 
 ///|
 /// Creates a warning diagnostic.
@@ -19,19 +20,21 @@ pub fn error(message : String) -> Message {
 
 ///|
 /// Errors raised for invalid archives, invalid XML, missing parts, or unsupported input.
+#derive(Debug, Eq)
 pub(all) suberror DocxError {
   InvalidZip(message~ : String)
   InvalidXml(message~ : String)
   MissingPart(message~ : String)
   Unsupported(message~ : String)
-} derive(Debug, Eq)
+}
 
 ///|
 /// Converted value together with accumulated diagnostics.
+#derive(Debug, Eq)
 pub(all) struct ConversionResult {
   value : String
   messages : Array[Message]
-} derive(Debug, Eq)
+}
 
 ///|
 /// Creates a successful conversion result with no diagnostics.

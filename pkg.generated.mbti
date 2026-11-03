@@ -161,12 +161,13 @@ pub fn xml_element(String, attributes? : Map[String, String], children? : Array[
 pub fn xml_text(String) -> @xml.XmlNode
 
 // Errors
+#derive(Eq, @debug.Debug)
 pub(all) suberror DocxError {
   InvalidZip(message~ : String)
   InvalidXml(message~ : String)
   MissingPart(message~ : String)
   Unsupported(message~ : String)
-} derive(Eq, @debug.Debug)
+}
 pub fn DocxError::equal(Self, Self) -> Bool
 pub fn DocxError::not_equal(Self, Self) -> Bool
 pub fn DocxError::to_repr(Self) -> @debug.Repr

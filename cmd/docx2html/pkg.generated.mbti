@@ -8,14 +8,18 @@ import {
 // Values
 
 // Errors
-type CliError derive(Eq, @debug.Debug)
+#derive(Eq, @debug.Debug)
+type CliError
 
 // Types and methods
-type CliCommand derive(Eq, @debug.Debug)
+#derive(Eq, @debug.Debug)
+type CliCommand
 
-type CliOptions derive(Eq, @debug.Debug)
+#derive(Eq, @debug.Debug)
+type CliOptions
 
-type CliOutputFormat derive(Eq, @debug.Debug)
+#derive(Eq, @debug.Debug)
+type CliOutputFormat
 
 // Type aliases
 

@@ -1,8 +1,9 @@
 ///|
 /// In-memory ZIP archive used to read DOCX parts.
+#derive(Debug, Eq)
 pub(all) struct ZipArchive {
   entries : Map[String, Bytes]
-} derive(Debug, Eq)
+}
 
 ///|
 /// Opens ZIP bytes into an in-memory archive.

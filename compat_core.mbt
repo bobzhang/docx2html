@@ -8,12 +8,13 @@ pub type ConversionResult = @core.ConversionResult
 
 ///|
 /// Errors raised for invalid archives, invalid XML, missing parts, or unsupported input.
+#derive(Debug, Eq)
 pub(all) suberror DocxError {
   InvalidZip(message~ : String)
   InvalidXml(message~ : String)
   MissingPart(message~ : String)
   Unsupported(message~ : String)
-} derive(Debug, Eq)
+}
 
 ///|
 /// Creates a warning diagnostic.
