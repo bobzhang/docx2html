@@ -18,11 +18,12 @@ pub fn xml_text(String) -> XmlNode
 // Errors
 
 // Types and methods
+#derive(Eq, @debug.Debug)
 pub(all) struct XmlElement {
   name : String
   attributes : Map[String, String]
   children : Array[XmlNode]
-} derive(Eq, @debug.Debug)
+}
 pub fn XmlElement::descendants_by_tag_name(Self, String) -> Array[Self]
 pub fn XmlElement::elements_by_tag_name(Self, String) -> Array[Self]
 pub fn XmlElement::equal(Self, Self) -> Bool
@@ -32,10 +33,11 @@ pub fn XmlElement::not_equal(Self, Self) -> Bool
 pub fn XmlElement::text(Self) -> String raise @core.DocxError
 pub fn XmlElement::to_repr(Self) -> @debug.Repr
 
+#derive(Eq, @debug.Debug)
 pub(all) enum XmlNode {
   XmlElement(XmlElement)
   XmlText(String)
-} derive(Eq, @debug.Debug)
+}
 pub fn XmlNode::equal(Self, Self) -> Bool
 pub fn XmlNode::not_equal(Self, Self) -> Bool
 pub fn XmlNode::to_repr(Self) -> @debug.Repr

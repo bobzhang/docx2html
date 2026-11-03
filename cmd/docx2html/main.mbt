@@ -1,16 +1,19 @@
 ///|
+#derive(Debug, Eq)
 enum CliOutputFormat {
   Html
   Markdown
-} derive(Debug, Eq)
+}
 
 ///|
+#derive(Debug, Eq)
 enum CliCommand {
   Run(CliOptions)
   Help
-} derive(Debug, Eq)
+}
 
 ///|
+#derive(Debug, Eq)
 struct CliOptions {
   input_path : String
   output_path : String?
@@ -18,12 +21,13 @@ struct CliOptions {
   style_map_path : String?
   output_format : CliOutputFormat
   pretty_print : Bool
-} derive(Debug, Eq)
+}
 
 ///|
+#derive(Debug, Eq)
 suberror CliError {
   CliError(String)
-} derive(Debug, Eq)
+}
 
 ///|
 extern "C" fn exit_process(status : Int32) -> Unit = "exit"
