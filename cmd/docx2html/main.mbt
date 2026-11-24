@@ -33,7 +33,7 @@ suberror CliError {
 extern "C" fn exit_process(status : Int32) -> Unit = "exit"
 
 ///|
-async fn main {
+async fn main_async() -> Unit {
   run_main() catch {
     CliError(message) => {
       write_stderr(message + "\n")
@@ -329,4 +329,9 @@ fn ensure_trailing_newline(content : String) -> String {
   } else {
     content + "\n"
   }
+}
+
+///|
+fn main {
+  @async.run_async_main(main_async)
 }
