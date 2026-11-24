@@ -1,6 +1,6 @@
 import {
-  "bobzhang/docx2html" @docx,
   "moonbitlang/async",
+  "bobzhang/docx2html" @docx,
   "moonbitlang/async/fs" @afs,
   "moonbitlang/async/os_error",
   "moonbitlang/async/stdio",
